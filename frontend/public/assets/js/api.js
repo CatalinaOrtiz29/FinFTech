@@ -133,6 +133,9 @@
     activeRuns: function () {
       return request('GET', '/api/runs/active', { auth: false });
     },
+    compare: function (ids) {
+      return request('GET', '/api/history/compare?ids=' + ids.join(','), { auth: false });
+    },
     run: function (id) {
       return request('GET', '/api/runs/' + id, { auth: false });
     },

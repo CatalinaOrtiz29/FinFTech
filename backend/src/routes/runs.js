@@ -64,6 +64,27 @@ router.get('/history/export.csv', (req, res) => {
   res.send(reports.exportHistoryCsv({}));
 });
 
+/** Compara dos o mÃƒÂ¡s ejecuciones y calcula deltas de las mÃƒÂ©tricas clave. */
+router.get('/history/compare', (req, res) => {
+  const ids = String(req.query.ids || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (ids.length < 2) throw require('../lib/errors').badRequest('Se requieren al menos dos IDs: ?ids=a,b');
+  const runs = ids.map((id) => runner.getRun(id));
+  const delta = (a, b) => (a === 0 || a == null ? null : Math.round(((b - a) / a) * 1000) / 10);
+  const first = runs[0];
+  const last = runs[runs.length - 1];
+  res.json({
+    runs,
+    deltas: {
+      p95Pct: delta(first.metrics?.latencyMs?.p95, last.metrics?.latencyMs?.p95),
+      errorRatePct: delta(first.metrics?.errorRatePct, last.metrics?.errorRatePct),
+      rpsPct: delta(first.metrics?.rps, last.metrics?.rps),
+    },
+  });
+});
+
 router.get('/summary', (req, res) => res.json(reports.summary()));
 
 module.exports = router;

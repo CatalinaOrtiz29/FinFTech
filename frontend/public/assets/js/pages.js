@@ -98,6 +98,55 @@
     return '<div class="rounded-lg border border-outline-variant/30 dark:border-slate-800 p-3"><div class="text-[11px] uppercase tracking-wide text-secondary">' + U.esc(label) + '</div><div class="font-code-mono text-lg text-on-surface dark:text-inverse-on-surface">' + U.esc(value) + '</div></div>';
   }
 
+  /* ---------- ComparaciÃƒÂ³n de ejecuciones ---------- */
+  function showCompare(aId, bId) {
+    var backdrop = document.createElement('div');
+    backdrop.id = 'ff-detail-backdrop';
+    backdrop.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+    backdrop.innerHTML = '<div class="bg-surface-container-lowest dark:bg-slate-900 rounded-xl border border-outline-variant/40 dark:border-slate-800 max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6">' + U.loading('Comparando ejecucionesÃ¢â‚¬Â¦') + '</div>';
+    backdrop.addEventListener('click', function (e) {
+      if (e.target === backdrop) backdrop.remove();
+    });
+    document.body.appendChild(backdrop);
+    api
+      .compare([aId, bId])
+      .then(function (res) {
+        var a = res.runs[0];
+        var b = res.runs[1];
+        var d = res.deltas;
+        function deltaTag(v) {
+          if (v === null || v === undefined) return '';
+          var cls = v <= 0 ? 'text-emerald-600' : 'text-red-600';
+          return '<span class="' + cls + ' font-code-mono text-[12px]">' + (v > 0 ? '+' : '') + v + '%</span>';
+        }
+        function col(run) {
+          var m = run.metrics || {};
+          return (
+            '<div class="flex-1 rounded-lg border border-outline-variant/30 dark:border-slate-800 p-4"><div class="flex items-center justify-between mb-2"><span class="font-code-mono text-primary-container">' + U.esc(run.id) + '</span>' + statusBadge(run) + '</div>' +
+            '<div class="space-y-2 text-body-sm">' +
+            row('Escenario', run.scenario) + row('P95', U.ms(m.latencyMs && m.latencyMs.p95)) + row('Errores', U.pct(m.errorRatePct)) + row('RPS', U.num(m.rps)) + row('Solicitudes', U.num(m.requests)) +
+            '</div></div>'
+          );
+        }
+        function row(k, v) {
+          return '<div class="flex justify-between border-b border-outline-variant/20 dark:border-slate-800 py-1"><span class="text-secondary">' + U.esc(k) + '</span><span class="font-code-mono">' + U.esc(v) + '</span></div>';
+        }
+        backdrop.querySelector('div').innerHTML =
+          '<div class="flex items-center justify-between mb-4"><h2 class="text-headline-md font-headline-md">ComparaciÃƒÂ³n de ejecuciones</h2><button id="ff-close-detail" class="text-secondary hover:text-on-surface text-label-md">Cerrar</button></div>' +
+          '<div class="flex flex-col sm:flex-row gap-4">' + col(a) + col(b) + '</div>' +
+          '<div class="mt-4 grid grid-cols-3 gap-3 text-center">' +
+          mini('ÃŽâ€ P95', (d.p95Pct === null ? 'Ã¢â‚¬â€' : (d.p95Pct > 0 ? '+' : '') + d.p95Pct + '%')) + mini('ÃŽâ€ errores', (d.errorRatePct === null ? 'Ã¢â‚¬â€' : (d.errorRatePct > 0 ? '+' : '') + d.errorRatePct + '%')) + mini('ÃŽâ€ RPS', (d.rpsPct === null ? 'Ã¢â‚¬â€' : (d.rpsPct > 0 ? '+' : '') + d.rpsPct + '%')) +
+          '</div>' +
+          '<div class="mt-3 text-[12px] text-outline">Deltas calculados respecto a la primera ejecuciÃƒÂ³n (' + U.esc(aId) + ' Ã¢â€ â€™ ' + U.esc(bId) + '). ' + deltaTag(d.p95Pct) + '</div>';
+        backdrop.querySelector('#ff-close-detail').onclick = function () {
+          backdrop.remove();
+        };
+      })
+      .catch(function (err) {
+        backdrop.querySelector('div').innerHTML = U.errorBox(err);
+      });
+  }
+
   /* ---------- Dashboard ---------- */
   async function dashboard() {
     await guarded(async function () {
@@ -379,7 +428,7 @@
       var scenarios = (await api.scenarios()).scenarios;
       main().innerHTML =
         U.pageHeader('History & Reports', 'Consulta, compara y exporta los resultados de ejecuciones anteriores.',
-          U.button('Exportar CSV', { variant: 'outline', icon: 'download', id: 'ff-exp-csv' }) + U.button('Exportar JSON', { variant: 'outline', icon: 'download', id: 'ff-exp-json' })
+          U.button('Comparar recientes', { variant: 'outline', icon: 'compare_arrows', id: 'ff-compare' }) + U.button('Exportar CSV', { variant: 'outline', icon: 'download', id: 'ff-exp-csv' }) + U.button('Exportar JSON', { variant: 'outline', icon: 'download', id: 'ff-exp-json' })
         ) +
         U.card({
           icon: 'filter_alt', title: 'Filtros', subtitle: 'Acota el historial por escenario y resultado.',
@@ -410,6 +459,18 @@
       document.getElementById('ff-f-apply').onclick = load;
       document.getElementById('ff-exp-csv').onclick = function () { window.open(api.exportUrl('/api/history/export.csv'), '_blank'); };
       document.getElementById('ff-exp-json').onclick = function () { window.open(api.exportUrl('/api/history/export.json'), '_blank'); };
+      document.getElementById('ff-compare').onclick = async function () {
+        try {
+          var recent = (await api.runs('limit=2')).runs;
+          if (recent.length < 2) {
+            U.toast('Se necesitan al menos dos ejecuciones para comparar.', 'info');
+            return;
+          }
+          showCompare(recent[1].id, recent[0].id);
+        } catch (err) {
+          U.toast(err.message, 'error');
+        }
+      };
       load();
     });
   }
