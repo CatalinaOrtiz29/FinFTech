@@ -1,0 +1,39 @@
+# ===== Dependencias =====
+node_modules/
+**/node_modules/
+
+# ===== Secretos y entorno =====
+.env
+.env.*
+!.env.example
+
+# ===== Datos / persistencia =====
+backend/data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# ===== Resultados de pruebas y reportes =====
+k6/results/
+results/
+*.log
+logs/
+coverage/
+htmlcov/
+.coverage
+
+# ===== Builds =====
+dist/
+build/
+.vite/
+
+# ===== Tooling =====
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
