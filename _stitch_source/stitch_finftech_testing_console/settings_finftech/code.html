@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="h-full" lang="en"><head>
+<html class="h-full bg-background text-on-surface dark:bg-inverse-surface dark:text-inverse-on-surface" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Settings &amp; Lab Configuration | FinFTech Load &amp; Resilience Lab</title>
@@ -147,7 +147,7 @@
     }
   </style>
 </head>
-<body class="bg-background text-on-surface font-body-md text-body-md antialiased h-full overflow-hidden flex">
+<body class="bg-background text-on-surface font-body-md text-body-md antialiased h-full overflow-hidden flex dark:bg-inverse-surface dark:text-inverse-on-surface">
 <!-- ================= SIDEBAR (From Shared Components JSON) ================= -->
 <!-- Exact attributes from JSON: fixed left-0 top-0 bottom-0 w-60 h-screen, border-r border-outline-variant/30 -->
 <aside class="fixed left-0 top-0 bottom-0 w-60 h-screen bg-surface dark:bg-inverse-surface border-r border-outline-variant/30 dark:border-outline/20 flex flex-col justify-between p-4 z-30">
@@ -242,12 +242,13 @@
 <span class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
 </button>
 <!-- Dark Mode Toggle -->
-<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Toggle theme" type="button">
-<span class="material-symbols-outlined text-[20px]" data-icon="dark_mode">dark_mode</span>
+<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Cambiar tema" type="button" id="theme-toggle">
+<span class="material-symbols-outlined block dark:hidden" data-icon="dark_mode" style="font-size: 19px;">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block text-amber-300" data-icon="light_mode" style="font-size: 19px;">light_mode</span>
 </button>
 <!-- User Avatar -->
 <div class="flex items-center gap-2 pl-2">
-<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold flex items-center justify-center">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold flex items-center justify-center" data-ff-avatar>
             CV
           </div>
 </div>

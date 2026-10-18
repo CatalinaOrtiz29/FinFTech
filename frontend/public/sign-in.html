@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="h-full" lang="en"><head>
+<html class="h-full bg-background text-on-surface dark:bg-inverse-surface dark:text-inverse-on-surface" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Sign in to FinFTech - Load & Resilience Lab</title>
@@ -112,9 +112,9 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <link rel="stylesheet" href="assets/css/finftech.css"/>
 </head>
-<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary" data-page="sign-in">
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary dark:bg-inverse-surface dark:text-inverse-on-surface" data-page="sign-in">
 <!-- Top System Status & Utility Bar -->
-<header class="w-full bg-surface-container-lowest border-b border-outline-variant px-6 py-3 flex justify-between items-center z-10">
+<header class="w-full bg-surface-container-lowest border-b border-outline-variant px-6 py-3 flex justify-between items-center z-10 dark:bg-inverse-surface dark:border-outline/20">
 <div class="flex items-center gap-3">
 <!-- FinFTech Brand Mark -->
 <div class="flex items-center gap-2.5">
@@ -127,6 +127,11 @@
 </div>
 <!-- Right status pill & cluster reference -->
 <div class="flex items-center gap-4">
+<!-- Theme Toggle -->
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" title="Cambiar tema" id="theme-toggle" style="margin-left: auto;">
+<span class="material-symbols-outlined block dark:hidden" data-icon="dark_mode" style="font-size: 19px;">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block text-amber-300" data-icon="light_mode" style="font-size: 19px;">light_mode</span>
+</button>
 <div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#ECFDF5] border border-[#A7F3D0]">
 <span class="h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></span>
 <span class="font-label-sm text-label-sm text-[#047857]">All systems operational</span>

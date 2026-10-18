@@ -115,10 +115,10 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <link rel="stylesheet" href="assets/css/finftech.css"/>
 </head>
-<body class="bg-background text-on-surface antialiased font-body-md h-full flex overflow-hidden" data-page="test-lab">
+<body class="bg-background text-on-surface antialiased font-body-md h-full flex overflow-hidden dark:bg-inverse-surface dark:text-inverse-on-surface" data-page="test-lab">
 <!-- ================= SIDEBAR (Shared Component: SideNavBar) ================= -->
 <!-- Target: w-60 fixed left, border-r outline-variant/30, active: Test Lab -->
-<aside class="fixed left-0 top-0 bottom-0 w-60 h-screen bg-surface border-r border-outline-variant/30 flex flex-col justify-between p-4 z-30">
+<aside class="fixed left-0 top-0 bottom-0 w-60 h-screen bg-surface dark:bg-inverse-surface border-r border-outline-variant/30 flex flex-col justify-between p-4 z-30">
 <div class="flex flex-col gap-6">
 <!-- Brand Anchor Header -->
 <div class="flex items-center gap-3 px-2 pt-1">
@@ -183,7 +183,7 @@
 <!-- ================= MAIN CONTENT WRAPPER ================= -->
 <div class="pl-60 flex-1 flex flex-col h-screen overflow-hidden">
 <!-- ================= TOP NAVIGATION BAR (Shared Component: TopNavBar) ================= -->
-<header class="h-14 bg-surface border-b border-outline-variant/30 flex items-center justify-between px-8 w-full shrink-0 z-20">
+<header class="h-14 bg-surface border-b border-outline-variant/30 dark:border-outline/20 dark:bg-inverse-surface flex items-center justify-between px-8 w-full shrink-0 z-20">
 <!-- Breadcrumb / Section context -->
 <div class="flex items-center gap-2">
 <span class="font-label-md text-label-md text-secondary">Test Lab</span>
@@ -210,12 +210,13 @@
 <button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Notifications" type="button">
 <span class="material-symbols-outlined text-xl" data-icon="notifications">notifications</span>
 </button>
-<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Theme" type="button">
-<span class="material-symbols-outlined text-xl" data-icon="dark_mode">dark_mode</span>
+<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Cambiar tema" type="button" id="theme-toggle">
+<span class="material-symbols-outlined block dark:hidden" data-icon="dark_mode" style="font-size: 19px;">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block text-amber-300" data-icon="light_mode" style="font-size: 19px;">light_mode</span>
 </button>
 </div>
-<!-- User Avatar CV -->
-<div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center font-label-sm text-label-sm font-semibold tracking-wider cursor-pointer shadow-sm ring-2 ring-primary/20">
+<!-- User Avatar -->
+<div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center font-label-sm text-label-sm font-semibold tracking-wider cursor-pointer shadow-sm ring-2 ring-primary/20" data-ff-avatar>
           CV
         </div>
 </div>

@@ -189,9 +189,9 @@
           return (
             '<div class="py-3 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-secondary">' +
             U.icon(s.name === 'database' ? 'database' : s.name === 'chaos' ? 'bolt' : s.name === 'k6' ? 'equalizer' : s.name === 'toxiproxy' ? 'hub' : 'code', 18) +
-            '</div><div><div class="text-body-sm font-label-md font-semibold text-on-surface dark:text-inverse-on-surface">' + U.esc(s.label) + '</div><div class="text-[12px] font-code-mono text-outline">' + U.esc(s.name) + '</div></div></div><div class="flex items-center gap-3">' +
+            '</div><div><div class="text-body-sm font-label-md font-semibold text-on-surface dark:text-inverse-on-surface">' + U.esc(s.label) + '</div><div class="text-[12px] font-code-mono text-outline">' + U.esc(s.name) + '</div></div></div><div class="flex items-center gap-3 min-w-0">' +
             U.badge(s.status) +
-            '<span class="text-[11px] font-code-mono text-outline max-w-[180px] truncate" title="' + U.esc(s.detail) + '">' + U.esc(s.detail) + '</span></div></div>'
+            '<span class="text-[11px] font-code-mono text-outline max-w-[140px] truncate" title="' + U.esc(s.detail) + '">' + U.esc(s.detail) + '</span></div></div>'
           );
         })
         .join('');
@@ -513,7 +513,7 @@
           icon: 'info', title: 'InformaciÃƒÂ³n y funciones no disponibles', subtitle: 'Transparencia sobre el alcance real.',
           body: '<ul class="text-body-sm space-y-2 text-secondary dark:text-secondary-fixed-dim">' +
             '<li>' + U.icon('check_circle', 16) + ' API en <span class="font-code-mono">' + U.esc(FF.apiBase()) + '</span> Ã‚Â· ' + U.esc(apiSvc ? apiSvc.detail : '') + '</li>' +
-            '<li>' + U.icon('info', 16) + ' <strong>SonarQube, Toxiproxy y k6</strong> requieren Docker: se entregan en <span class="font-code-mono">docker-compose.yml</span>, pero no se ejecutan en este equipo (Docker no estÃƒÂ¡ instalado).</li>' +
+            '<li>' + U.icon('info', 16) + ' <strong>SonarQube, Toxiproxy y k6</strong> se entregan en <span class="font-code-mono">docker-compose.yml</span> y se ejecutan con Docker (perfiles opcionales <span class="font-code-mono">load</span> y <span class="font-code-mono">quality</span>).</li>' +
             '<li>' + U.icon('block', 16) + ' <strong>Webhooks, SLA guardrails, SSO (Okta/SAML), API keys y gestiÃƒÂ³n de equipos</strong> no estÃƒÂ¡n implementados y se muestran como no disponibles.</li>' +
             '</ul>',
         });
@@ -617,7 +617,7 @@
       '<div class="relative">' +
       '<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline pointer-events-none" aria-hidden="true">' + (opts.icon || 'mail') + '</span>' +
       '<input id="' + id + '" name="' + id + '" type="' + type + '" required' + autocomplete +
-      ' class="w-full h-11 pl-10 ' + (trailing ? 'pr-11' : 'pr-3') + ' rounded-lg bg-surface-container-lowest border border-outline-variant text-body-md font-body-md text-on-surface placeholder:text-outline/70 focus:outline-none focus:border-primary-container focus:ring-4 focus:ring-primary/10 transition-all"' +
+      ' class="w-full h-11 pl-10 ' + (trailing ? 'pr-11' : 'pr-3') + ' rounded-lg bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant dark:border-slate-700 text-body-md font-body-md text-on-surface placeholder:text-outline/70 focus:outline-none focus:border-primary-container focus:ring-4 focus:ring-primary/10 transition-all"' +
       ' placeholder="' + U.esc(opts.placeholder || '') + '" value="' + U.esc(opts.value || '') + '"/>' +
       trailing +
       '</div>' +
@@ -628,13 +628,13 @@
 
   function labStatusCard() {
     return (
-      '<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm">' +
+      '<div class="bg-surface-container-lowest dark:bg-slate-900 rounded-xl border border-outline-variant dark:border-slate-700 p-5 shadow-sm">' +
       '<div class="flex items-center justify-between mb-4 gap-3">' +
       '<div class="flex items-center gap-2.5 min-w-0">' +
-      '<div class="h-7 w-7 shrink-0 rounded-md bg-surface-container-high flex items-center justify-center text-primary">' + U.icon('dns', 16) + '</div>' +
+      '<div class="h-7 w-7 shrink-0 rounded-md bg-surface-container-high dark:bg-slate-800 flex items-center justify-center text-primary">' + U.icon('dns', 16) + '</div>' +
       '<div class="min-w-0"><div class="font-label-sm text-label-sm text-on-surface truncate">Estado del laboratorio</div><div class="text-[11px] font-code-mono text-outline truncate">GET /api/services</div></div>' +
       '</div>' +
-      '<span class="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-surface-container border border-outline-variant text-secondary">en vivo</span>' +
+      '<span class="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-surface-container border border-outline-variant dark:bg-slate-800 dark:border-slate-700 text-secondary">en vivo</span>' +
       '</div>' +
       '<div id="ff-lab-status" class="space-y-2 text-body-sm" aria-live="polite"><div class="text-outline">Consultando componentesÃ¢â‚¬Â¦</div></div>' +
       '</div>'
@@ -649,7 +649,7 @@
       .then(function (res) {
         var rows = (res.services || []).slice(0, 5).map(function (s) {
           return (
-            '<div class="flex items-center justify-between gap-3 py-1.5 px-2.5 rounded bg-surface-container-low border border-outline-variant/50">' +
+            '<div class="flex items-center justify-between gap-3 py-1.5 px-2.5 rounded bg-surface-container-low dark:bg-slate-800/60 border border-outline-variant/50 dark:border-slate-700/50">' +
             '<div class="flex items-center gap-2 min-w-0">' + U.icon('chevron_right', 15) + '<span class="font-code-mono text-on-surface truncate">' + U.esc(s.name) + '</span></div>' +
             '<span class="shrink-0">' + U.badge(s.status) + '</span>' +
             '</div>'
@@ -658,19 +658,19 @@
         box.innerHTML = rows.join('');
       })
       .catch(function () {
-        box.innerHTML = '<div class="py-1.5 px-2.5 rounded bg-surface-container-low border border-outline-variant/50 text-outline">No se pudo consultar el estado (la API no responde).</div>';
+        box.innerHTML = '<div class="py-1.5 px-2.5 rounded bg-surface-container-low dark:bg-slate-800/60 border border-outline-variant/50 dark:border-slate-700/50 text-outline">No se pudo consultar el estado (la API no responde).</div>';
       });
   }
 
   function signIn() {
     var panel =
-      '<section class="lg:col-span-5 bg-surface-container-low border-t lg:border-t-0 lg:border-l border-outline-variant p-6 sm:p-10 lg:p-12 flex flex-col justify-between gap-8 relative overflow-hidden">' +
+      '<section class="lg:col-span-5 bg-surface-container-low border-t lg:border-t-0 lg:border-l border-outline-variant dark:bg-slate-800/60 dark:border-slate-700 p-6 sm:p-10 lg:p-12 flex flex-col justify-between gap-8 relative overflow-hidden">' +
       '<div class="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden="true" style="background-image: radial-gradient(#004ac6 1px, transparent 1px); background-size: 20px 20px;"></div>' +
       '<div class="relative z-10">' +
       '<div class="flex flex-wrap items-center gap-2 mb-6">' +
-      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface flex items-center gap-1.5 shadow-sm"><span class="h-1.5 w-1.5 rounded-full bg-primary"></span>k6 &amp; Toxiproxy</span>' +
-      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface shadow-sm">Docker Compose</span>' +
-      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface shadow-sm">Idempotencia</span>' +
+      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant dark:border-slate-700 font-label-sm text-label-sm text-on-surface flex items-center gap-1.5 shadow-sm"><span class="h-1.5 w-1.5 rounded-full bg-primary"></span>k6 &amp; Toxiproxy</span>' +
+      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant dark:border-slate-700 font-label-sm text-label-sm text-on-surface shadow-sm">Docker Compose</span>' +
+      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant dark:border-slate-700 font-label-sm text-label-sm text-on-surface shadow-sm">Idempotencia</span>' +
       '</div>' +
       '<h2 class="font-headline-md text-headline-md sm:font-headline-lg sm:text-headline-lg text-on-surface tracking-tight mb-3">SimulaciÃƒÂ³n de carga y tolerancia a fallos</h2>' +
       '<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-6">Ejecuta pruebas de carga, inyecta latencia y fallos controlados, mide latencia, throughput y errores, y evita transferencias duplicadas mediante idempotencia sobre la API de la billetera digital.</p>' +
@@ -687,7 +687,7 @@
       '</section>';
 
     var form =
-      '<section class="lg:col-span-7 flex flex-col justify-between p-6 sm:p-10 lg:p-14 xl:px-24 bg-surface-container-lowest">' +
+      '<section class="lg:col-span-7 flex flex-col justify-between p-6 sm:p-10 lg:p-14 xl:px-24 bg-surface-container-lowest dark:bg-slate-900">' +
       '<div class="w-full max-w-md mx-auto my-auto py-6 sm:py-8">' +
       '<div class="mb-8">' +
       '<div class="flex items-center gap-3 mb-6">' +
@@ -712,7 +712,7 @@
       '</button>' +
       '</form>' +
       '<p class="mt-4 text-body-sm text-on-surface-variant text-center">Ã‚Â¿No tienes cuenta? <a class="text-primary-container hover:underline font-medium" href="sign-up.html">Crear cuenta</a></p>' +
-      '<div class="mt-6 rounded-lg border border-outline-variant bg-surface-container-low p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">' +
+      '<div class="mt-6 rounded-lg border border-outline-variant bg-surface-container-low dark:bg-slate-800/60 p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">' +
       '<div class="text-[12px] text-on-surface-variant">Credenciales de demostraciÃƒÂ³n: <span class="font-code-mono text-on-surface">admin@finftech.local</span> / <span class="font-code-mono text-on-surface">finftech-admin</span></div>' +
       '<button type="button" id="ff-demo-creds" class="shrink-0 text-label-sm font-label-sm text-primary-container hover:underline">Usar credenciales demo</button>' +
       '</div>' +
