@@ -3,8 +3,12 @@
 
 export const BASE = (__ENV.K6_BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
 export const SCENARIO = __ENV.K6_SCENARIO || 'load';
-export const VUS = Number(__ENV.K6_VUS || 10);
-export const DURATION = __ENV.K6_DURATION || '15s';
+// IMPORTANTE: no usar los nombres K6_VUS / K6_DURATION.
+// k6 los interpreta como opciones globales y sobrescriben las opciones por
+// escenario declaradas en run-scenario.js (p. ej. idempotency usa vus:1 y
+// iterations:25). Por eso aqui se usan nombres propios del proyecto.
+export const VUS = Number(__ENV.K6_LOAD_VUS || 10);
+export const DURATION = __ENV.K6_LOAD_DURATION || '15s';
 export const P95_MS = Number(__ENV.K6_P95_MS || 800);
 export const ERROR_RATE = Number(__ENV.K6_ERROR_RATE || 0.01);
 export const RAMP = __ENV.K6_RAMP || '10s';

@@ -82,8 +82,12 @@ FinFTech/
 
 Copia `.env.example` a `.env` y ajusta los valores (no versiones el `.env`). Las variables
 principales: `PORT`, `DB_PATH`, `TOKEN_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
-`CORS_ORIGINS` y, para k6, `K6_BASE_URL`, `K6_VUS`, `K6_DURATION`, `K6_P95_MS`,
-`K6_ERROR_RATE`.
+`CORS_ORIGINS` y, para k6, `K6_BASE_URL`, `K6_LOAD_VUS`, `K6_LOAD_DURATION`,
+`K6_P95_MS`, `K6_ERROR_RATE`, `K6_PROXY_URL`, `TOXIPROXY_ADMIN`,
+`K6_TOXIPROXY_LATENCY_MS` y `K6_TOXIPROXY_RATE_KB`.
+
+> No uses los nombres `K6_VUS` / `K6_DURATION`: k6 los interpreta como opciones globales y
+> sobrescriben las opciones por escenario del script. Ver [`k6/README.md`](k6/README.md).
 
 ## Iniciar el entorno
 
@@ -145,15 +149,49 @@ sin saldo negativo**.
 
 ```bash
 K6_SCENARIO=functional  docker compose --profile load run --rm k6-run
-K6_SCENARIO=load        K6_VUS=20 K6_DURATION=30s docker compose --profile load run --rm k6-run
+K6_SCENARIO=load        K6_LOAD_VUS=20 K6_LOAD_DURATION=30s docker compose --profile load run --rm k6-run
 K6_SCENARIO=concurrency docker compose --profile load run --rm k6-run
+K6_SCENARIO=ramp        docker compose --profile load run --rm k6-run
+K6_SCENARIO=idempotency docker compose --profile load run --rm k6-run
+
+# Fallo a nivel de aplicaciÃƒÂ³n (/api/chaos)
 K6_SCENARIO=latency     docker compose --profile load run --rm k6-run
 K6_SCENARIO=outage      docker compose --profile load run --rm k6-run
 K6_SCENARIO=recovery    docker compose --profile load run --rm k6-run
-K6_SCENARIO=idempotency docker compose --profile load run --rm k6-run
+
+# Fallo a nivel de RED (el trÃƒÂ¡fico atraviesa Toxiproxy)
+K6_SCENARIO=toxiproxy-baseline  docker compose --profile load run --rm k6-run
+K6_SCENARIO=toxiproxy-latency   docker compose --profile load run --rm k6-run
+K6_SCENARIO=toxiproxy-bandwidth docker compose --profile load run --rm k6-run
+K6_SCENARIO=toxiproxy-outage    docker compose --profile load run --rm k6-run
+K6_SCENARIO=toxiproxy-recovery  docker compose --profile load run --rm k6-run
 ```
 
-Resultados en `k6/results/result.json`. Detalle en [`k6/README.md`](k6/README.md).
+Los resultados se conservan por escenario en `k6/results/summary-<escenario>.json` y
+`k6/results/stream-<escenario>.json`. Detalle en [`k6/README.md`](k6/README.md).
+
+### AnÃƒÂ¡lisis estÃƒÂ¡tico (SonarQube, perfil `quality`)
+
+```bash
+docker compose --profile quality up -d            # sonar-db + sonarqube (http://localhost:9000)
+
+# Cobertura de las pruebas del backend en formato LCOV
+cd backend
+node --test --experimental-test-coverage \
+  --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \
+  tests/integration/api.test.js tests/unit/wallet.test.js
+cd ..
+
+# Token de anÃƒÂ¡lisis (la primera vez hay que cambiar la contraseÃƒÂ±a de `admin`)
+curl -s -u admin:admin -X POST "http://localhost:9000/api/users/change_password?login=admin&password=<nueva>&previousPassword=admin"
+TOKEN=$(curl -s -u admin:<nueva> -X POST "http://localhost:9000/api/user_tokens/generate?name=finftech-cli" | jq -r .token)
+
+# AnÃƒÂ¡lisis
+docker compose --profile quality run --rm -e SONAR_TOKEN="$TOKEN" sonar-scanner
+```
+
+La configuraciÃƒÂ³n vive en [`sonar-project.properties`](sonar-project.properties) y el
+LCOV se enlaza con `sonar.javascript.lcov.reportPaths`.
 
 ## Historial, mÃƒÂ©tricas e informes
 
@@ -227,12 +265,15 @@ comprobaciones ejecutadas en [`docs/verificacion.md`](docs/verificacion.md).
 
 ## Limitaciones conocidas
 
-- **Docker no estaba disponible en el equipo de desarrollo** durante la construcciÃƒÂ³n, por lo
-  que los servicios `k6`, `Toxiproxy` y `SonarQube` **no se ejecutaron**: se entregan
-  configurados y documentados, pero su arranque queda **pendiente de verificaciÃƒÂ³n** en un
-  entorno con Docker.
-- Verificado de forma nativa: API, persistencia, idempotencia, concurrencia, ejecutor de
-  pruebas, mÃƒÂ©tricas, historial, informes, CORS y servido del frontend.
+- **Docker sÃƒÂ­ estÃƒÂ¡ disponible y verificado**: API, frontend (Nginx), Toxiproxy, k6
+  (13 escenarios) y SonarQube se han construido, arrancado y ejercitado en Docker Compose.
+  La evidencia estÃƒÂ¡ en [`docs/verificacion.md`](docs/verificacion.md).
+- **SonarQube** (perfil `quality`) se ejecutÃƒÂ³ con un anÃƒÂ¡lisis real: *quality gate* **OK**
+  (ratings A/A/A), `0` bugs, `0` vulnerabilidades, `9` *code smells* y cobertura de lÃƒÂ­nea
+  ~53 % (LCOV de las pruebas del backend). Requiere ~2 GB de RAM y arranca en ~40 s.
+- **Los fallos de aplicaciÃƒÂ³n (`/api/chaos/*`) y los de red (Toxiproxy) son mecanismos
+  distintos**: el primero actÃƒÂºa en el proceso de la API (funciona sin Docker); el segundo
+  interrumpe el trÃƒÂ¡fico a nivel de red a travÃƒÂ©s del proxy `finftech_api`.
 - No se implementan (se muestran como *no disponibles* en la interfaz): SSO (Okta/SAML),
   webhooks, SLA guardrails, API keys/CLI y gestiÃƒÂ³n de equipos.
 - No se declara cumplimiento de normas ISO: solo se aplican prÃƒÂ¡cticas tÃƒÂ©cnicas concretas.

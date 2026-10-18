@@ -25,6 +25,8 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-finftech-admin}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080,http://localhost:3000,http://127.0.0.1:3000}
       APP_COMMIT: ${APP_COMMIT:-unknown}
+      # La API sondea este endpoint para informar del estado real de Toxiproxy.
+      TOXIPROXY_ADMIN: ${TOXIPROXY_ADMIN:-http://toxiproxy:8474}
     ports:
       - "3000:3000"
     volumes:
@@ -78,20 +80,38 @@ services:
     depends_on:
       api:
         condition: service_healthy
+      toxiproxy:
+        condition: service_started
     environment:
       K6_BASE_URL: ${K6_BASE_URL:-http://api:3000}
-      K6_VUS: ${K6_VUS:-10}
-      K6_DURATION: ${K6_DURATION:-15s}
+      # Nombres propios: K6_VUS / K6_DURATION son opciones globales de k6 y
+      # sobrescribirian las opciones por escenario del script.
+      K6_LOAD_VUS: ${K6_LOAD_VUS:-10}
+      K6_LOAD_DURATION: ${K6_LOAD_DURATION:-15s}
       K6_P95_MS: ${K6_P95_MS:-800}
       K6_ERROR_RATE: ${K6_ERROR_RATE:-0.01}
       K6_SCENARIO: ${K6_SCENARIO:-load}
+      # Inyeccion de fallos de RED mediante Toxiproxy (escenarios toxiproxy-*).
+      K6_PROXY_URL: ${K6_PROXY_URL:-http://toxiproxy:8666}
+      TOXIPROXY_ADMIN: ${TOXIPROXY_ADMIN:-http://toxiproxy:8474}
+      TOXIPROXY_PROXY: ${TOXIPROXY_PROXY:-finftech_api}
+      K6_TOXIPROXY_LATENCY_MS: ${K6_TOXIPROXY_LATENCY_MS:-300}
+      K6_TOXIPROXY_JITTER_MS: ${K6_TOXIPROXY_JITTER_MS:-0}
+      K6_TOXIPROXY_RATE_KB: ${K6_TOXIPROXY_RATE_KB:-4}
     volumes:
       - ./k6:/scripts:ro
       - ./k6/results:/results
     networks:
       - finftech
-    entrypoint: ["k6", "run", "--out", "json=/results/result.json"]
-    command: ["/scripts/run-scenario.js"]
+    # Se conservan los resultados POR ESCENARIO: flujo crudo + resumen agregado
+    # (percentiles, throughput y evaluacion de umbrales).
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        k6 run
+        --out json=/results/stream-$${K6_SCENARIO:-load}.json
+        --summary-export=/results/summary-$${K6_SCENARIO:-load}.json
+        /scripts/run-scenario.js
 
   # AnÃƒÂ¡lisis estÃƒÂ¡tico (opcional).
   sonarqube:
@@ -130,6 +150,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
+
+  # Escaner de SonarQube. Ejecutar (dentro del perfil quality):
+  #   docker compose --profile quality run --rm -e SONAR_TOKEN=<token> sonar-scanner
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli:11
+    profiles: ["quality"]
+    depends_on:
+      sonarqube:
+        condition: service_started
+    environment:
+      SONAR_HOST_URL: ${SONAR_HOST_URL:-http://sonarqube:9000}
+      SONAR_TOKEN: ${SONAR_TOKEN:-}
+    volumes:
+      - .:/usr/src
+    working_dir: /usr/src
+    networks:
+      - finftech
 
 networks:
   finftech:

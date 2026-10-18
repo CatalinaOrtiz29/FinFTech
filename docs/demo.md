@@ -27,8 +27,9 @@ curl http://localhost:3000/health
 curl http://localhost:3000/api/services
 ```
 
-Resultado esperado: `status: healthy`, `database: ok` y el listado de componentes
-(la API y la base de datos como `ok`; k6 y Toxiproxy como `external` si no se usan).
+Resultado esperado: `status: healthy`, `database: ok` y el listado de componentes. Con
+Docker en marcha, `k6` y `toxiproxy` tambiÃƒÂ©n aparecen como `ok` (el estado de Toxiproxy se
+sondea de verdad contra `http://toxiproxy:8474`); sin Docker aparecen como `external`.
 
 ## 3. Prueba funcional (desde la interfaz o k6)
 
@@ -40,7 +41,7 @@ Resultado esperado: `checks` y endpoints sin errores.
 ## 4. Prueba de carga
 
 - Interfaz: *Test Lab* Ã¢â€ â€™ **Carga normal** (VUs 10Ã¢â‚¬â€œ20, 15Ã¢â‚¬â€œ30 s).
-- k6 Ã°Å¸Â³: `K6_SCENARIO=load K6_VUS=20 K6_DURATION=30s docker compose --profile load run --rm k6-run`
+- k6 Ã°Å¸Â³: `K6_SCENARIO=load K6_LOAD_VUS=20 K6_LOAD_DURATION=30s docker compose --profile load run --rm k6-run`
 
 Observa en *Performance overview* y *Live runs*: rps, P95/P99 y tasa de errores reales.
 
@@ -98,7 +99,50 @@ Cambiar el `amount` con la misma clave responde `409`.
   - `GET /api/history/export.csv` y `GET /api/history/export.json`
   - `GET /api/history/compare?ids=<id1>,<id2>`
 
-## 11. Detener el entorno conservando datos
+## 11. Fallos a nivel de RED con Toxiproxy Ã°Å¸Â³
+
+A diferencia de `/api/chaos/*` (fallo dentro de la aplicaciÃƒÂ³n), aquÃƒÂ­ el trÃƒÂ¡fico atraviesa el
+proxy de red y el fallo lo inyecta Toxiproxy.
+
+```bash
+# LÃƒÂ­nea base: mismo camino (proxy) sin tÃƒÂ³xicos
+K6_SCENARIO=toxiproxy-baseline docker compose --profile load run --rm k6-run
+
+# Latencia de red (toxic latency, 300 ms)
+K6_SCENARIO=toxiproxy-latency  docker compose --profile load run --rm k6-run
+
+# Ancho de banda limitado (toxic bandwidth)
+K6_SCENARIO=toxiproxy-bandwidth docker compose --profile load run --rm k6-run
+
+# Corte de red y recuperaciÃƒÂ³n
+K6_SCENARIO=toxiproxy-outage   docker compose --profile load run --rm k6-run
+K6_SCENARIO=toxiproxy-recovery docker compose --profile load run --rm k6-run
+```
+
+ComprobaciÃƒÂ³n manual (mientras el tÃƒÂ³xico estÃƒÂ¡ activo):
+
+```bash
+curl -s http://localhost:8474/proxies                                                  # proxy y tÃƒÂ³xicos
+curl -s -o /dev/null -w '%{time_total}s\n' http://localhost:8666/health                # a travÃƒÂ©s del proxy
+curl -s -o /dev/null -w '%{time_total}s\n' http://localhost:3000/health                # directo (comparaciÃƒÂ³n)
+```
+
+Resultado esperado: con el tÃƒÂ³xico de latencia, la peticiÃƒÂ³n por el proxy tarda ~300 ms mÃƒÂ¡s que
+la directa; con el proxy deshabilitado, la primera falla y la segunda sigue respondiendo.
+Los escenarios `toxiproxy-*` **siempre** restauran el proxy en su `teardown()`.
+
+## 12. AnÃƒÂ¡lisis estÃƒÂ¡tico con SonarQube Ã°Å¸Â³
+
+```bash
+docker compose --profile quality up -d          # http://localhost:9000
+# generar cobertura LCOV y ejecutar el escÃƒÂ¡ner (ver README.md Ã¢â€ â€™ AnÃƒÂ¡lisis estÃƒÂ¡tico)
+docker compose --profile quality run --rm -e SONAR_TOKEN="<token>" sonar-scanner
+```
+
+Resultado esperado: anÃƒÂ¡lisis `EXECUTION SUCCESS` y *quality gate* del proyecto consultable en
+la interfaz o por API.
+
+## 13. Detener el entorno conservando datos
 
 ```bash
 docker compose down      # conserva el volumen finftech-data
