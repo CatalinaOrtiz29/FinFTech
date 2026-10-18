@@ -1,0 +1,142 @@
+# FinFTech - entorno del laboratorio
+#
+#   docker compose up --build -d            # api + frontend (+ toxiproxy)
+#   docker compose --profile load run --rm k6-run            # pruebas k6
+#   docker compose --profile quality up -d sonarqube          # anÃƒÂ¡lisis estÃƒÂ¡tico (opcional)
+#
+# El frontend queda en http://localhost:8080 y la API en http://localhost:3000.
+# Las variables se toman de un archivo .env basado en .env.example.
+
+name: finftech
+
+services:
+  api:
+    build:
+      context: ./backend
+    image: finftech/api:local
+    container_name: finftech-api
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DB_PATH: /data/finftech.db
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TOKEN_SECRET: ${TOKEN_SECRET:-finftech-dev-secret-change-me}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@finftech.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-finftech-admin}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080,http://localhost:3000,http://127.0.0.1:3000}
+      APP_COMMIT: ${APP_COMMIT:-unknown}
+    ports:
+      - "3000:3000"
+    volumes:
+      - finftech-data:/data
+    networks:
+      - finftech
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 5s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    image: finftech/frontend:local
+    container_name: finftech-frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    networks:
+      - finftech
+    restart: unless-stopped
+
+  # Proxy de inyecciÃƒÂ³n de fallos a nivel de red (latencia, cortes, pÃƒÂ©rdida).
+  # La interfaz administrativa (8474) se publica solo en localhost.
+  toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:2.9.0
+    container_name: finftech-toxiproxy
+    command: ["-host", "0.0.0.0", "-config", "/config/toxiproxy.json"]
+    volumes:
+      - ./toxiproxy/toxiproxy.json:/config/toxiproxy.json:ro
+    ports:
+      - "127.0.0.1:8474:8474"   # API de administraciÃƒÂ³n (solo local)
+      - "8666:8666"             # proxy hacia la API
+    networks:
+      - finftech
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Ejecutor de pruebas de carga (job, no servicio permanente).
+  k6-run:
+    image: grafana/k6:0.53.0
+    profiles: ["load"]
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      K6_BASE_URL: ${K6_BASE_URL:-http://api:3000}
+      K6_VUS: ${K6_VUS:-10}
+      K6_DURATION: ${K6_DURATION:-15s}
+      K6_P95_MS: ${K6_P95_MS:-800}
+      K6_ERROR_RATE: ${K6_ERROR_RATE:-0.01}
+      K6_SCENARIO: ${K6_SCENARIO:-load}
+    volumes:
+      - ./k6:/scripts:ro
+      - ./k6/results:/results
+    networks:
+      - finftech
+    entrypoint: ["k6", "run", "--out", "json=/results/result.json"]
+    command: ["/scripts/run-scenario.js"]
+
+  # AnÃƒÂ¡lisis estÃƒÂ¡tico (opcional).
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: finftech-sonarqube
+    profiles: ["quality"]
+    depends_on:
+      sonar-db:
+        condition: service_healthy
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonar-data:/opt/sonarqube/data
+      - sonar-extensions:/opt/sonarqube/extensions
+    networks:
+      - finftech
+
+  sonar-db:
+    image: postgres:16-alpine
+    container_name: finftech-sonar-db
+    profiles: ["quality"]
+    environment:
+      POSTGRES_DB: sonar
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
+    volumes:
+      - sonar-db-data:/var/lib/postgresql/data
+    networks:
+      - finftech
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+networks:
+  finftech:
+    driver: bridge
+
+volumes:
+  finftech-data:
+  sonar-data:
+  sonar-extensions:
+  sonar-db-data:
