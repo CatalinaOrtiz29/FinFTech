@@ -94,7 +94,11 @@ principales: `PORT`, `DB_PATH`, `TOKEN_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
 ### Con Docker Compose
 
 ```bash
-cp .env.example .env        # ajustar TOKEN_SECRET y ADMIN_PASSWORD
+cp .env.example .env
+# OBLIGATORIO: generar un secreto propio para firmar los tokens (mÃƒÂ­nimo 16 caracteres):
+#   openssl rand -hex 32   -> pegar el resultado en TOKEN_SECRET del .env
+# La API se niega a arrancar en producciÃƒÂ³n con un valor de ejemplo; para aceptar el
+# riesgo de forma consciente: ALLOW_INSECURE_DEFAULTS=1.
 docker compose up --build -d
 ```
 

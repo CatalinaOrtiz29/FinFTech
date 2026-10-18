@@ -119,6 +119,20 @@ function evaluate(state, metrics) {
     return checks.every((c) => c.ok) ? 'passed' : 'failed';
   }
 
+  if (state.scenario === 'functional') {
+    // Criterio propio de la prueba funcional: ninguna respuesta 4xx/5xx. Evita que
+    // un login con credenciales incorrectas o una transferencia rechazada pasen
+    // desapercibidos (los 4xx no cuentan como "error de servidor").
+    const unexpected = Object.keys(metrics.statusCounts).filter((s) => Number(s) === 0 || Number(s) >= 400);
+    check(
+      'all_responses_2xx',
+      unexpected.length === 0,
+      unexpected.length ? `estados ${unexpected.join(',')}` : 'ninguno',
+      'sin 4xx ni 5xx',
+      'La prueba funcional (/health, /login, /transfer) solo debe responder 2xx'
+    );
+  }
+
   if (state.scenario === 'latency') {
     const injected = Number(state.config.latencyMs) || 0;
     check('latency_injected', metrics.latencyMs.p95 >= injected * 0.5, metrics.latencyMs.p95, `>=${round(injected * 0.5, 0)}`, 'La latencia inyectada debe reflejarse en P95');
@@ -190,7 +204,14 @@ async function worker(state, index, ids) {
     if (state.scenario === 'functional') {
       await doRequest(state, { path: '/health' });
       if (state.stop) break;
-      await doRequest(state, { path: '/login', method: 'POST', body: { email: 'demo', password: 'demo' } });
+      // Credenciales reales del administrador sembrado: antes se enviaba
+      // {email:'demo', password:'demo'}, que siempre respondÃƒÂ­a 401 y dejaba la
+      // comprobaciÃƒÂ³n de login vacÃƒÂ­a (el 4xx no cuenta como error de servidor).
+      await doRequest(state, {
+        path: '/login',
+        method: 'POST',
+        body: { email: config.adminEmail, password: config.adminPassword },
+      });
       if (state.stop) break;
       await doRequest(state, {
         path: '/transfer',

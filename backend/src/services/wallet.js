@@ -3,6 +3,7 @@
 const crypto = require('crypto');
 const { getDb, transaction } = require('../db');
 const { shortId } = require('../lib/ids');
+const { LIMITS, withinLimit } = require('../lib/validation');
 const { badRequest, notFound, conflict, unprocessable } = require('../lib/errors');
 
 /** Hash estable de la solicitud, para detectar reutilizaciÃƒÂ³n de clave con cuerpo distinto. */
@@ -60,7 +61,14 @@ function transfer({ from, to, amount, currency, idempotencyKey, correlationId })
   if (!idempotencyKey || typeof idempotencyKey !== 'string' || idempotencyKey.length < 8) {
     throw badRequest('Se requiere el encabezado Idempotency-Key (mÃƒÂ­nimo 8 caracteres).');
   }
+  // Acotado de entradas: la clave se persiste (UNIQUE), asÃƒÂ­ que no puede ser ilimitada.
+  if (!withinLimit(idempotencyKey, LIMITS.idempotencyKey)) {
+    throw badRequest(`La clave de idempotencia no puede superar ${LIMITS.idempotencyKey} caracteres.`);
+  }
   if (!from || !to) throw badRequest('Los campos "from" y "to" son obligatorios.');
+  if (!withinLimit(from, LIMITS.accountId) || !withinLimit(to, LIMITS.accountId)) {
+    throw badRequest(`Los identificadores de cuenta no pueden superar ${LIMITS.accountId} caracteres.`);
+  }
   if (from === to) throw unprocessable('La cuenta de origen y destino no pueden coincidir.');
 
   const amountCents = Math.round(Number(amount) * 100);

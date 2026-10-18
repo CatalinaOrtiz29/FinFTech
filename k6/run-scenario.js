@@ -28,6 +28,12 @@ import { addLatency as addNetworkLatency, addBandwidthLimit as addNetworkBandwid
 const PROXY_BASE = (__ENV.K6_PROXY_URL || 'http://toxiproxy:8666').replace(/\/$/, '');
 const TARGET = SCENARIO.indexOf('toxiproxy') === 0 ? PROXY_BASE : BASE;
 
+// Credenciales de demostraciÃƒÂ³n: configurables para no incrustar la contraseÃƒÂ±a en
+// el cÃƒÂ³digo. Los valores por defecto son los del laboratorio (ADMIN_EMAIL /
+// ADMIN_PASSWORD de la API).
+const DEMO_EMAIL = __ENV.K6_DEMO_EMAIL || 'admin@finftech.local';
+const DEMO_PASSWORD = __ENV.K6_DEMO_PASSWORD || 'finftech-admin';
+
 function isNetworkScenario() {
   return SCENARIO.indexOf('toxiproxy') === 0;
 }
@@ -37,6 +43,21 @@ const transferFailures = new Rate('finftech_transfer_failed');
 const transfersCreated = new Counter('finftech_transfers_created');
 const transfersReplayed = new Counter('finftech_transfers_replayed');
 const duplicatesDetected = new Counter('finftech_duplicate_effects');
+
+// RecuperaciÃƒÂ³n: solo se contabilizan las peticiones posteriores a la retirada del
+// fallo. AsÃƒÂ­ el escenario de recuperaciÃƒÂ³n no se conforma con "hubo errores", sino
+// que exige que las peticiones vuelvan a responder correctamente AL FINAL.
+const recoverySuccess = new Rate('finftech_recovery_success');
+const recoverySamples = new Counter('finftech_recovery_samples');
+
+function recordRecovery(data, res) {
+  const startedAt = data && data.startedAt ? data.startedAt : 0;
+  const elapsed = (Date.now() - startedAt) / 1000;
+  // +1s de margen sobre el punto de retirada del fallo (mitad de la duraciÃƒÂ³n).
+  if (elapsed < durationSeconds() / 2 + 1) return;
+  recoverySamples.add(1);
+  recoverySuccess.add(res.status === 201 || res.status === 200);
+}
 
 // ---------------------------------------------------------------------------
 // Opciones y umbrales por escenario
@@ -102,8 +123,11 @@ function scenarioOptions() {
         vus: VUS,
         duration: DURATION,
         thresholds: {
-          // Se exige que se haya observado el fallo durante la ejecuciÃƒÂ³n.
+          // Se exige que se haya observado el fallo durante la ejecuciÃƒÂ³n...
           http_req_failed: ['rate>0.05'],
+          // ...y que, tras retirar el fallo, las peticiones vuelvan a responder.
+          finftech_recovery_success: ['rate>=0.95'],
+          finftech_recovery_samples: ['count>10'],
         },
       };
     case 'idempotency':
@@ -161,6 +185,9 @@ function scenarioOptions() {
         duration: DURATION,
         thresholds: {
           http_req_failed: ['rate>0.02'],
+          // La recuperaciÃƒÂ³n debe ser real: el trÃƒÂ¡fico vuelve a responder por el proxy.
+          finftech_recovery_success: ['rate>=0.95'],
+          finftech_recovery_samples: ['count>10'],
         },
       };
     case 'load':
@@ -203,7 +230,7 @@ export function setup() {
     console.log(`setup: toxic 'latency' aplicado (${ms}ms jitter ${jitter}ms) -> HTTP ${res.status}`);
   }
   if (SCENARIO === 'toxiproxy-bandwidth') {
-    const rateKb = Number(__ENV.K6_TOXIPROXY_RATE_KB || 32);
+    const rateKb = Number(__ENV.K6_TOXIPROXY_RATE_KB || 4);
     const res = addNetworkBandwidth(rateKb);
     console.log(`setup: toxic 'bandwidth' aplicado (${rateKb}KB/s) -> HTTP ${res.status}`);
   }
@@ -249,7 +276,7 @@ function functional() {
   const health = http.get(`${TARGET}/health`);
   check(health, { 'health 200': (r) => r.status === 200 });
 
-  const login = http.post(`${TARGET}/login`, JSON.stringify({ email: 'admin@finftech.local', password: 'finftech-admin' }), { headers: JSON_HEADERS });
+  const login = http.post(`${TARGET}/login`, JSON.stringify({ email: DEMO_EMAIL, password: DEMO_PASSWORD }), { headers: JSON_HEADERS });
   check(login, { 'login 200': (r) => r.status === 200 });
 
   const { from, to } = { from: 'acc_alice', to: 'acc_bob' };
@@ -284,30 +311,30 @@ function idempotency() {
   duplicatesDetected.add(extraCreated);
 }
 
-function recovery() {
+function recovery(data) {
   // Una ÃƒÂºnica VU restaura el servicio a mitad de la ejecuciÃƒÂ³n.
   if (__VU === 1 && __ITER === 0) {
     sleep(durationSeconds() / 2);
     resetChaos();
   }
-  transferRequest(0.25);
+  recordRecovery(data, transferRequest(0.25));
 }
 
-function toxiproxyRecovery() {
+function toxiproxyRecovery(data) {
   // Una ÃƒÂºnica VU rehabilita el proxy de red a mitad del escenario.
   if (__VU === 1 && __ITER === 0) {
     sleep(durationSeconds() / 2);
     clearToxics();
     enableProxy();
   }
-  transferRequest(0.25);
+  recordRecovery(data, transferRequest(0.25));
 }
 
-export default function () {
+export default function (data) {
   if (SCENARIO === 'functional') return functional();
   if (SCENARIO === 'idempotency') return idempotency();
-  if (SCENARIO === 'recovery') return recovery();
-  if (SCENARIO === 'toxiproxy-recovery') return toxiproxyRecovery();
+  if (SCENARIO === 'recovery') return recovery(data);
+  if (SCENARIO === 'toxiproxy-recovery') return toxiproxyRecovery(data);
   if (SCENARIO === 'outage' || SCENARIO === 'latency') return transferRequest(0.25);
   if (SCENARIO === 'load' || SCENARIO === 'concurrency' || SCENARIO === 'ramp') {
     if (Math.random() < 0.2) return healthCheck();

@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const { isWeakSecret } = require('./lib/validation');
 
 function env(name, fallback) {
   const value = process.env[name];
@@ -9,6 +10,8 @@ function env(name, fallback) {
 
 const ROOT = path.resolve(__dirname, '..');
 const pkg = require('../package.json');
+
+const tokenSecret = env('TOKEN_SECRET', 'finftech-dev-secret-change-me-in-env');
 
 const config = {
   env: env('NODE_ENV', 'development'),
@@ -26,7 +29,12 @@ const config = {
     .filter(Boolean),
 
   // AutenticaciÃƒÂ³n (token HMAC propio, sin dependencias externas).
-  tokenSecret: env('TOKEN_SECRET', 'finftech-dev-secret-change-me-in-env'),
+  tokenSecret,
+  // Verdadero si el secreto es un valor de ejemplo (o demasiado corto). En
+  // producciÃƒÂ³n la API se niega a arrancar con un secreto dÃƒÂ©bil, salvo que se
+  // acepte de forma explÃƒÂ­cita con ALLOW_INSECURE_DEFAULTS=1 (ver server.js).
+  insecureTokenSecret: isWeakSecret(tokenSecret),
+  allowInsecureDefaults: env('ALLOW_INSECURE_DEFAULTS', '0') === '1',
   tokenTtlSeconds: Number(env('TOKEN_TTL_SECONDS', String(60 * 60 * 8))),
 
   // Usuario administrador sembrado ÃƒÂºnicamente si no existe.

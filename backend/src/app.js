@@ -7,10 +7,7 @@ const config = require('./config');
 const requestContext = require('./middleware/requestContext');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 const chaos = require('./services/chaos');
-const users = require('./services/users');
 const walletRoutes = require('./routes/wallet');
-const { issueToken } = require('./lib/auth');
-const { unauthorized, badRequest } = require('./lib/errors');
 
 const healthRoutes = require('./routes/health');
 const authRoutes = require('./routes/auth');
@@ -88,13 +85,7 @@ function createApp() {
 
   // Rutas de nivel raÃƒÂ­z (contratos reportados: /health, /login, /transfer).
   app.use('/', healthRoutes);
-  app.post('/login', (req, res) => {
-    const { email, password } = req.body || {};
-    if (!email || !password) throw badRequest('"email" y "password" son obligatorios.');
-    const user = users.authenticate(email, password);
-    if (!user) throw unauthorized('Credenciales invÃƒÂ¡lidas.');
-    res.json({ token: issueToken(user), user: users.toPublic(user) });
-  });
+  app.post('/login', authRoutes.handleLogin);
   app.post('/transfer', walletRoutes.handleTransfer);
 
   // API versionada.

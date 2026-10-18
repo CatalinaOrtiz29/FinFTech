@@ -17,11 +17,11 @@ contenedores. Cada resultado consignado aquÃƒÂ­ procede de una ejecuciÃƒÂ
 | MÃƒÂ©tricas, historial, informes, comparaciÃƒÂ³n | Ã¢Å“â€¦ Verificados |
 | CORS frontend Ã¢â€ â€ API | Ã¢Å“â€¦ Verificado |
 | Build y servido del frontend | Ã¢Å“â€¦ Verificado (9 pÃƒÂ¡ginas, assets; tambiÃƒÂ©n vÃƒÂ­a Nginx en Docker) |
-| Pruebas automatizadas | Ã¢Å“â€¦ 13/13 (cobertura de lÃƒÂ­nea ~53 %) |
+| Pruebas automatizadas | Ã¢Å“â€¦ 45/45 (cobertura de lÃƒÂ­nea ~90 %) |
 | Docker Compose (api/frontend/toxiproxy/k6/sonar) | Ã¢Å“â€¦ Construido, arrancado y validado |
 | k6 (contenedor) | Ã¢Å“â€¦ 13 escenarios ejecutados, exit 0 |
 | Toxiproxy (fallos de red) | Ã¢Å“â€¦ Latencia, ancho de banda, corte y recuperaciÃƒÂ³n |
-| SonarQube | Ã¢Å“â€¦ AnÃƒÂ¡lisis real: gate OK, 0 bugs, 0 vulnerabilidades |
+| SonarQube | Ã¢Å“â€¦ AnÃƒÂ¡lisis real: gate OK, 0 bugs, 0 vulnerabilidades, 15 hotspots revisados (SAFE) |
 
 ## Comandos y resultados
 
@@ -275,6 +275,82 @@ y el runtime insertaba **un ÃƒÂºnico** hijo, que ocupaba la **columna 1** (�
 quedando pegado a la izquierda con el resto de la pantalla vacÃƒÂ­o. Ahora se renderizan dos
 `<section>` con `lg:col-span-7` (formulario) y `lg:col-span-5` (panel complementario),
 respetando la composiciÃƒÂ³n de dos columnas del diseÃƒÂ±o original.
+
+## 7. AuditorÃƒÂ­a final: resiliencia, seguridad y resultados
+
+### 7.1 InterpretaciÃƒÂ³n de los escenarios k6 (exit code Ã¢â€°Â  resultado Ã¢â€°Â  checks)
+
+- **CÃƒÂ³digo de salida de k6**: se deriva de los **umbrales** (`thresholds`). `0` = todos los umbrales cumplidos; `99` = algÃƒÂºn umbral incumplido. Es independiente de los checks funcionales.
+- **Resultado funcional del escenario**: mÃƒÂ©trica `checks` (aserciones sobre la respuesta). Se interpreta por separado.
+- **MÃƒÂ©tricas**: percentiles, throughput y tasas de error proceden de muestras reales, como se comprobÃƒÂ³ cruzando los tres planos:
+  - k6 `http_reqs` (151 en idempotency) Ã¢â€ â€ API `POST /transfer` (150) + 1 `POST /api/chaos/reset` del teardown + 1 sonda de salud.
+  - k6 `http_req_failed` (32 498 fallos en recovery) Ã¢â€ â€ API `byRoute."POST /transfer".errors = 32 498` (coincidencia exacta).
+  - k6 `finftech_transfers_created` (25) Ã¢â€ â€ filas nuevas en `transfers` (89 040 Ã¢â€ â€™ 89 065).
+- **Escenarios de outage**: los errores esperados cuentan como ÃƒÂ©xito del experimento cuando se cumplen los criterios configurados. `outage`/`toxiproxy-outage`: `http_req_failed >= 0.5` (real: 100 % y 99.99 %). `checks` cae al 0 %, lo cual es correcto y esperado.
+- **Escenarios de recovery**: la recuperaciÃƒÂ³n es real, no solo "hubo errores":
+  - `recovery`: 32 498 fallos durante la interrupciÃƒÂ³n (88.44 %) y **3 798 peticiones posteriores a la retirada del fallo con 100.00 % de ÃƒÂ©xito** (`finftech_recovery_success`).
+  - `toxiproxy-recovery`: 83 740 fallos por corte de red (95.22 %) y **3 796 peticiones posteriores por el proxy con 100.00 % de ÃƒÂ©xito**.
+  - Nuevos umbrales: `finftech_recovery_success: rate>=0.95` y `finftech_recovery_samples: count>10`.
+- **Percentiles coherentes**: auditorÃƒÂ­a automatizada (`k6/audit-summaries.mjs`) reevaluÃƒÂ³ los 57 umbrales de los 13 resÃƒÂºmenes y verificÃƒÂ³ la monotonÃƒÂ­a `min Ã¢â€°Â¤ med Ã¢â€°Â¤ p90 Ã¢â€°Â¤ p95 Ã¢â€°Â¤ max` y `min Ã¢â€°Â¤ avg Ã¢â€°Â¤ max`: **0 inconsistencias**. CÃƒÂ³digo de salida de k6 `0` en los 13 escenarios.
+- **Criterios por escenario** (extracto):
+  | Escenario | Umbrales reevaluados | checks |
+  |-----------|---------------------|--------|
+  | functional | 2 | 100.00 % |
+  | load | 2 | 100.00 % |
+  | concurrency | 2 | 100.00 % |
+  | ramp | 2 | 100.00 % |
+  | latency | 2 | 100.00 % |
+  | outage | 1 | 0.00 % (esperado) |
+  | recovery | 3 | 11.55 % (esperado) |
+  | idempotency | 2 | 100.00 % |
+  | toxiproxy-baseline | 1 | 100.00 % |
+  | toxiproxy-latency | 2 | 100.00 % |
+  | toxiproxy-outage | 1 | 0.00 % (esperado) |
+  | toxiproxy-bandwidth | 1 | 100.00 % |
+  | toxiproxy-recovery | 3 | 4.77 % (esperado) |
+
+### 7.2 SonarQube Ã¢â‚¬â€ hotspots revisados y decisiones
+
+Se analizaron los **15 hotspots** (tras las correcciones: 17 Ã¢â€ â€™ 15, porque se eliminaron 2 `S2068` y 1 `S5852` y apareciÃƒÂ³ 1 `S5332` nuevo en `metrics.js`) y se marcaron como `REVIEWED/SAFE` con justificaciÃƒÂ³n por clase:
+
+| Regla | Cantidad | DecisiÃƒÂ³n | JustificaciÃƒÂ³n |
+|-------|----------|----------|---------------|
+| `javascript:S2068` (credenciales incrustadas) | 0 (eran 2) | **Corregido** | Eliminadas en `runner.js` (usa `config.adminEmail`/`adminPassword`) y `k6/run-scenario.js` (env `K6_DEMO_EMAIL`/`K6_DEMO_PASSWORD`). |
+| `javascript:S5852` (ReDoS) | 3 (era 4) | **Corregido** el alcanzable | El correo de `/api/auth/register` era cuadrÃƒÂ¡tico: 64 KB tardaba **1,72 s**. Se sustituyÃƒÂ³ por un validador lineal acotado (`lib/validation.js`); una entrada de 100 KB ahora responde en **66 ms**. Los 3 restantes son build-time (`frontend/build.js`) o falso positivo lineal (`lib/auth.js:27`, `=+$`). |
+| `javascript:S2245` (`Math.random`) | 8 | **SAFE** | Solo datos de prueba y probabilidad de inyecciÃƒÂ³n de fallos; no genera identificadores ni tokens. |
+| `javascript:S5332` (`http://`) | 4 | **SAFE** | TrÃƒÂ¡fico local al laboratorio (red Docker/localhost); la API no termina TLS por diseÃƒÂ±o del MVP. |
+| `javascript:S5852` (`frontend/build.js`) | 2 | **SAFE** | Build-time sobre plantillas locales de confianza, sin entrada de usuario. |
+
+Resultado tras la revisiÃƒÂ³n: `security_hotspots = 0` por revisar, `security_hotspots_reviewed = 100 %`, `security_review_rating = A`.
+
+### 7.3 Defectos encontrados y corregidos
+
+1. **ReDoS en `/api/auth/register`** (entrada no autenticada, cuerpo de hasta 256 KB): validador cuadrÃƒÂ¡tico. Corregido con validador lineal + acotado de longitud (254 para correo, 200 para contraseÃƒÂ±a, 120 para nombre).
+2. **Identificadores de 32 bits (`shortId`)**: 1 colisiÃƒÂ³n reproducible en 100 000. `transfers.id` es PK Ã¢â€ â€™ un 500 bajo carga. Ampliado a 64 bits (16 hex).
+3. **Secreto por defecto en producciÃƒÂ³n**: la API aceptaba `TOKEN_SECRET=change-me-please`. Ahora se niega a arrancar en `NODE_ENV=production` salvo `ALLOW_INSECURE_DEFAULTS=1` (con aviso claro y comando de generaciÃƒÂ³n en `.env.example`).
+4. **Prueba funcional vacÃƒÂ­a**: `/login` se llamaba con `{email:'demo', password:'demo'}` (siempre 401) y el 4xx no contaba como error. Ahora usa `config.adminEmail`/`adminPassword` y exige respuestas 2xx (`all_responses_2xx`).
+5. **Credencial incrustada en k6**: `finftech-admin` literal Ã¢â€ â€™ configurable con `K6_DEMO_EMAIL`/`K6_DEMO_PASSWORD`.
+6. **`K6_TOXIPROXY_RATE_KB` por defecto inconsistente** (fallback 32 en el script vs 4 en Compose) Ã¢â€ â€™ alineado a 4.
+7. **Acotado de entradas**: clave de idempotencia (Ã¢â€°Â¤ 200), cuentas (Ã¢â€°Â¤ 64), contraseÃƒÂ±a (Ã¢â€°Â¤ 200).
+8. **AutorizaciÃƒÂ³n del laboratorio documentada**: `GET /api/accounts`, `/api/chaos`, etc. son pÃƒÂºblicos por diseÃƒÂ±o; quedÃƒÂ³ constancia en pruebas para que un cambio accidental haga fallar la suite.
+
+### 7.4 Pruebas ejecutadas (45/45, exit 0)
+
+- Suite original: 13/13.
+- Nuevas: validaciÃƒÂ³n lineal y entropÃƒÂ­a (`validation.test.js`), seguridad (`security.test.js`: rutas protegidas, enumeraciÃƒÂ³n, ReDoS acotado, CORS, JSON/413, fallo de dependencia + recuperaciÃƒÂ³n, guardia del secreto), persistencia tras reinicio (`persistence.test.js`), coherencia de mÃƒÂ©tricas/estados (`runner.test.js`), observabilidad/reportes (`reporting.test.js`), logger (`logger.test.js`).
+- Cobertura de lÃƒÂ­nea: **90,4 %** (2 045 / 2 262) en 29 ficheros; quality gate de SonarQube **OK** (89,1 % de cobertura en cÃƒÂ³digo nuevo).
+- End-to-end sobre el stack Docker: correo hostil Ã¢â€ â€™ 400 en 66 ms (antes 1,7 s); `/api/auth/me` sin token Ã¢â€ â€™ 401; token manipulado Ã¢â€ â€™ 401; idempotency key de 5 000 caracteres Ã¢â€ â€™ 400; id de transferencia con 16 hex (64 bits); CORS correcto; frontend sirve 41 463 bytes.
+
+### 7.5 Riesgos pendientes y limitaciones
+
+- **Sin TLS**: todo el trÃƒÂ¡fico del laboratorio va por HTTP (puertos 3000/8080/8666). En un despliegue real habrÃƒÂ­a que poner un proxy TLS delante; documentado como limitaciÃƒÂ³n del MVP.
+- **Sin rate limiting** sobre `/login` y `/register`: vulnerable a fuerza bruta. No se implementÃƒÂ³ para no interferir con k6 (que hace decenas de logins por segundo) ni con el ejecutor interno; queda como mejora futura.
+- **`/api/accounts`, `/api/transfers`, `/api/runs` y el plano de control de chaos son pÃƒÂºblicos** por diseÃƒÂ±o del laboratorio. Cambiarlo exigirÃƒÂ­a que k6 y el frontend gestionen tokens; documentado.
+- **Los tests de carga drenan saldos**: hay que ejecutar `seed.resetBalances()` antes de repetir una carga elevada (las filas de `transfers` no se borran: son evidencia).
+- **Idempotencia del ejecutor interno**: cuenta solo errores 5xx/red; los 4xx son visibles en `statusCounts` pero no entran en `errorRatePct`. Es un criterio deliberado (un 422 de negocio no es un fallo de servidor) y estÃƒÂ¡ documentado.
+- **Balance de Toxiproxy**: requiere `docker compose up` completo; si el proxy no estÃƒÂ¡ disponible, los escenarios `toxiproxy-*` no aplican.
+- **SonarQube** consume ~1,9 GB de los 7,4 GB disponibles; el anÃƒÂ¡lisis tarda ~1 minuto.
+- **`trust proxy = true`** en Express: `req.ip` se toma de `X-Forwarded-For`; no se usa para decisiones de seguridad, pero conviene revisarlo si se aÃƒÂ±ade rate limiting.
 
 ## Estado final de la verificaciÃƒÂ³n
 
