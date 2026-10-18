@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign in to FinFTech - Load & Resilience Lab</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-container": "#5c647a",
+            "surface-bright": "#f8f9ff",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed": "#131b2e",
+            "secondary": "#565e74",
+            "on-tertiary-container": "#bdffdb",
+            "outline": "#737686",
+            "on-error-container": "#93000a",
+            "primary-container": "#2563eb",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#005236",
+            "outline-variant": "#c3c6d7",
+            "primary-fixed-dim": "#b4c5ff",
+            "surface-dim": "#cbdbf5",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "secondary-container": "#dae2fd",
+            "inverse-on-surface": "#eaf1ff",
+            "surface-variant": "#d3e4fe",
+            "surface": "#f8f9ff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#eeefff",
+            "inverse-primary": "#b4c5ff",
+            "on-surface-variant": "#434655",
+            "background": "#f8f9ff",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-highest": "#d3e4fe",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-error": "#ffffff",
+            "on-background": "#0b1c30",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-container-low": "#eff4ff",
+            "secondary-fixed-dim": "#bec6e0",
+            "tertiary-container": "#007d55",
+            "on-tertiary-fixed": "#002113",
+            "error": "#ba1a1a",
+            "tertiary-fixed-dim": "#4edea3",
+            "inverse-surface": "#213145",
+            "tertiary": "#006242",
+            "on-primary-fixed-variant": "#003ea8",
+            "secondary-fixed": "#dae2fd",
+            "primary": "#004ac6",
+            "on-primary-fixed": "#00174b",
+            "surface-container": "#e5eeff",
+            "surface-tint": "#0053db",
+            "on-surface": "#0b1c30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.25rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "display": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "metric-stat": ["Inter"],
+            "code-mono": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["15px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "metric-stat": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-mono": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/finftech.css"/>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary" data-page="sign-in">
+<!-- Top System Status & Utility Bar -->
+<header class="w-full bg-surface-container-lowest border-b border-outline-variant px-6 py-3 flex justify-between items-center z-10">
+<div class="flex items-center gap-3">
+<!-- FinFTech Brand Mark -->
+<div class="flex items-center gap-2.5">
+<div class="h-8 w-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm shadow-primary/20">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">FinFTech</span>
+<span class="text-[11px] font-code-mono uppercase tracking-wider text-outline px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">Core v2.4</span>
+</div>
+</div>
+<!-- Right status pill & cluster reference -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#ECFDF5] border border-[#A7F3D0]">
+<span class="h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-[#047857]">All systems operational</span>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span>Resilience Status</span>
+<span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+</div>
+</header>
+<!-- Main Canvas: Split Horizon Architecture -->
+<main class="flex-1 w-full grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-53px)]">
+<!-- Left Column: Form & Access Control (7 cols on large desktop for focused ergonomics) -->
+<section class="lg:col-span-7 flex flex-col justify-between p-6 sm:p-10 lg:p-16 xl:px-24 bg-surface-container-lowest">
+<div class="w-full max-w-md mx-auto my-auto py-8">
+<!-- Header Group -->
+<div class="mb-8">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-surface-container-low border border-outline-variant mb-4">
+<span class="material-symbols-outlined text-primary text-[16px]">shield_lock</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">SSO & MFA Enforced</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight mb-2">Sign in to FinFTech</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Access your chaos engineering and digital wallet API stress testing lab</p>
+</div>
+<!-- SSO Identity Providers -->
+<div class="grid grid-cols-2 gap-3 mb-6">
+<button class="h-10 px-3.5 flex items-center justify-center gap-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low text-on-surface transition-all duration-150 active:scale-[0.98] shadow-sm" type="button">
+<svg class="h-4 w-4 fill-current text-on-surface" viewbox="0 0 24 24">
+<path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"></path>
+</svg>
+<span class="font-label-md text-label-md">GitHub</span>
+</button>
+<button class="h-10 px-3.5 flex items-center justify-center gap-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low text-on-surface transition-all duration-150 active:scale-[0.98] shadow-sm" type="button">
+<span class="material-symbols-outlined text-[17px] text-primary" style="font-variation-settings: 'FILL' 1;">corporate_fare</span>
+<span class="font-label-md text-label-md">Okta / SAML</span>
+</button>
+</div>
+<!-- Separator -->
+<div class="relative flex py-2 items-center mb-6">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="flex-shrink mx-4 font-label-sm text-label-sm text-outline uppercase tracking-wider">or continue with email</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<!-- Authentication Form -->
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="work-email">Work Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-outline pointer-events-none">mail</span>
+<input class="w-full h-10 pl-9 pr-3 text-body-md font-body-md text-on-surface bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-outline/70" id="work-email" name="email" placeholder="sre-lead@bankscale.io" required="" type="email" value="marcus.vance@solaris-fintech.de"/>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="block font-label-md text-label-md text-on-surface" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-outline pointer-events-none">lock</span>
+<input class="w-full h-10 pl-9 pr-10 text-body-md font-body-md text-on-surface bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-outline/70" id="password" name="password" placeholder="Enter cluster password" required="" type="password" value="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"/>
+<button class="absolute right-3 top-2.5 text-outline hover:text-on-surface focus:outline-none transition-colors" id="toggle-password" title="Toggle password visibility" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember me & hardware token info -->
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center gap-2 cursor-pointer select-none">
+<input checked="" class="h-4 w-4 rounded border-outline-variant text-primary-container focus:ring-primary/20" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Remember this device for 30 days</span>
+</label>
+<div class="flex items-center gap-1 text-outline" title="FIDO2 / WebAuthn supported on next step">
+<span class="material-symbols-outlined text-[15px]">key</span>
+<span class="text-[11px] font-label-sm">FIDO2</span>
+</div>
+</div>
+<!-- Primary Submit Button -->
+<button class="w-full h-10 mt-2 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.99] shadow-sm shadow-primary/25 border-t border-white/20" type="submit">
+<span>Sign In to Console</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</form>
+<!-- Compliance & Security Assurance Footer within card -->
+<div class="mt-8 pt-6 border-t border-outline-variant/60 flex items-center justify-between text-outline">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-[#047857]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span>SOC2 Type II & ISO 27001 Certified</span>
+</div>
+<span class="font-code-mono text-code-mono text-[11px] text-outline">Cluster TLS 1.3</span>
+</div>
+</div>
+<!-- Legal / Terminal Info at bottom left -->
+<footer class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-outline font-body-sm text-body-sm border-t border-outline-variant/40">
+<p>Ã‚Â© 2025 FinFTech Technologies Inc. Load & Resilience Lab.</p>
+<div class="flex items-center gap-4 text-[12px]">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Security Specs</a>
+<a class="hover:text-primary transition-colors" href="#">Incident Desk</a>
+</div>
+</footer>
+</section>
+<!-- Right Column: Mission Control & Infrastructure Telemetry Showcase (5 cols) -->
+<section class="lg:col-span-5 bg-surface-container-low border-l border-outline-variant p-6 sm:p-10 lg:p-12 flex flex-col justify-between relative overflow-hidden">
+<!-- Subtle architectural ambient grid background -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#004ac6 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="relative z-10">
+<!-- Badge cluster -->
+<div class="flex flex-wrap items-center gap-2 mb-6">
+<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface font-medium flex items-center gap-1.5 shadow-sm">
+<span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+            k6 & Toxiproxy Native
+          </span>
+<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface font-medium shadow-sm">
+            Docker Cluster Ready
+          </span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-3 tracking-tight">Enterprise Load & Chaos Simulation</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
+          Simulate high-frequency digital wallet transactions, injected network latency, and partition tolerance for mission-critical core banking ledgers.
+        </p>
+<!-- Bento Card 1: Active In-Flight Simulation Metric -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 mb-4 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<div class="h-7 w-7 rounded-md bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]">speed</span>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface">Payment Gateway Stress Injector</div>
+<div class="text-[11px] font-code-mono text-outline">Scenario: ledger_debit_v3</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] flex items-center gap-1">
+<span class="h-1.5 w-1.5 rounded-full bg-[#10B981]"></span>
+              Active Load
+            </span>
+</div>
+<div class="grid grid-cols-3 gap-3 pt-1 border-t border-outline-variant/60">
+<div>
+<div class="font-label-sm text-label-sm text-outline">Peak TPS</div>
+<div class="font-metric-stat text-metric-stat text-on-surface mt-0.5">48,250</div>
+<div class="text-[11px] text-[#047857] font-medium flex items-center mt-0.5">
+<span class="material-symbols-outlined text-[12px]">trending_up</span> +12% target
+              </div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline">p99.9 Latency</div>
+<div class="font-metric-stat text-metric-stat text-on-surface mt-0.5">14.2<span class="text-sm font-normal text-outline">ms</span></div>
+<div class="text-[11px] text-[#047857] font-medium flex items-center mt-0.5">
+<span class="material-symbols-outlined text-[12px]">check</span> within SLA
+              </div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-outline">Error Rate</div>
+<div class="font-metric-stat text-metric-stat text-on-surface mt-0.5">0.001<span class="text-sm font-normal text-outline">%</span></div>
+<div class="text-[11px] text-outline font-medium flex items-center mt-0.5">
+                Toxiproxy jitter: 8ms
+              </div>
+</div>
+</div>
+</div>
+<!-- Bento Card 2: Live Cluster Resilience Telemetry -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]">
+<div class="flex items-center justify-between text-xs font-label-sm text-outline mb-2">
+<span>RESILIENCE FAULT MATRIX</span>
+<span class="font-code-mono text-primary">CLUSTER-US-EAST-01</span>
+</div>
+<div class="space-y-2">
+<!-- Node 1 -->
+<div class="flex items-center justify-between text-xs py-1.5 px-2.5 rounded bg-surface-container-low border border-outline-variant/50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[15px]">database</span>
+<span class="font-code-mono text-on-surface">aurora-db-replica-eu1</span>
+</div>
+<span class="text-[11px] font-label-sm text-outline">Chaos Pod Partition: <strong>Passed</strong></span>
+</div>
+<!-- Node 2 -->
+<div class="flex items-center justify-between text-xs py-1.5 px-2.5 rounded bg-surface-container-low border border-outline-variant/50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[15px]">sync_alt</span>
+<span class="font-code-mono text-on-surface">redis-cache-tier-04</span>
+</div>
+<span class="text-[11px] font-label-sm text-outline">Packet Drop 15%: <strong>Auto-Healed</strong></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Trust Indicator / Social Proof -->
+<div class="pt-8 mt-6 border-t border-outline-variant/60 relative z-10">
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-outline mb-3">
+          Trusted by Tier-1 Fintechs & Neobanks
+        </div>
+<div class="flex items-center gap-6 opacity-70">
+<div class="flex items-center gap-1.5 font-bold tracking-tight text-on-surface text-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">account_balance</span>
+<span>STRIPE-CORE</span>
+</div>
+<div class="flex items-center gap-1.5 font-bold tracking-tight text-on-surface text-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">payments</span>
+<span>NEOPAY AG</span>
+</div>
+<div class="flex items-center gap-1.5 font-bold tracking-tight text-on-surface text-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">token</span>
+<span>VOLT LEDGER</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script>
+    // Lightweight password visibility toggle interaction
+    const toggleBtn = document.getElementById('toggle-password');
+    const pwdInput = document.getElementById('password');
+
+    if (toggleBtn && pwdInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isPassword = pwdInput.type === 'password';
+        pwdInput.type = isPassword ? 'text' : 'password';
+        const iconSpan = toggleBtn.querySelector('span');
+        if (iconSpan) {
+          iconSpan.textContent = isPassword ? 'visibility_off' : 'visibility';
+        }
+      });
+    }
+  </script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/app.js"></script>
+</body></html>

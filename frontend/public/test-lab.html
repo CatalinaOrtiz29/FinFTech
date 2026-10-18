@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinFTech Load &amp; Resilience Lab - Test Lab</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#eaf1ff",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-low": "#eff4ff",
+            "outline": "#737686",
+            "surface-tint": "#0053db",
+            "on-error-container": "#93000a",
+            "primary-container": "#2563eb",
+            "on-primary-fixed": "#00174b",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#007d55",
+            "secondary": "#565e74",
+            "primary-fixed-dim": "#b4c5ff",
+            "on-tertiary-fixed-variant": "#005236",
+            "surface-container-highest": "#d3e4fe",
+            "surface-variant": "#d3e4fe",
+            "on-tertiary-fixed": "#002113",
+            "surface-container": "#e5eeff",
+            "on-surface-variant": "#434655",
+            "on-tertiary-container": "#bdffdb",
+            "background": "#f8f9ff",
+            "secondary-fixed": "#dae2fd",
+            "on-surface": "#0b1c30",
+            "on-secondary-container": "#5c647a",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#dae2fd",
+            "secondary-fixed-dim": "#bec6e0",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-primary-fixed-variant": "#003ea8",
+            "on-tertiary": "#ffffff",
+            "on-background": "#0b1c30",
+            "error": "#ba1a1a",
+            "outline-variant": "#c3c6d7",
+            "inverse-primary": "#b4c5ff",
+            "surface": "#f8f9ff",
+            "tertiary-fixed-dim": "#4edea3",
+            "surface-bright": "#f8f9ff",
+            "on-error": "#ffffff",
+            "surface-dim": "#cbdbf5",
+            "tertiary": "#006242",
+            "inverse-surface": "#213145",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#131b2e",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "tertiary-fixed": "#6ffbbe",
+            "primary": "#004ac6",
+            "on-primary-container": "#eeefff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1.25rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "code-mono": ["JetBrains Mono", "monospace"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "metric-stat": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "display": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"]
+          },
+          "fontSize": {
+            "code-mono": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "metric-stat": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-sm": ["15px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/finftech.css"/>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md h-full flex overflow-hidden" data-page="test-lab">
+<!-- ================= SIDEBAR (Shared Component: SideNavBar) ================= -->
+<!-- Target: w-60 fixed left, border-r outline-variant/30, active: Test Lab -->
+<aside class="fixed left-0 top-0 bottom-0 w-60 h-screen bg-surface border-r border-outline-variant/30 flex flex-col justify-between p-4 z-30">
+<div class="flex flex-col gap-6">
+<!-- Brand Anchor Header -->
+<div class="flex items-center gap-3 px-2 pt-1">
+<div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined text-lg" data-icon="terminal">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">FinFTech</span>
+<span class="font-body-sm text-body-sm text-secondary">Load &amp; Resilience Lab</span>
+</div>
+</div>
+<!-- Navigation Tabs: Exact JSON values and active state lock -->
+<nav aria-label="Main Navigation" class="flex flex-col gap-1.5">
+<!-- Overview (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="dashboard.html">
+<span class="material-symbols-outlined text-xl" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<!-- Test Lab (ACTIVE TAB: Exact matches style_active_navigation) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-container text-primary font-label-md text-label-md transition-colors duration-150 ease-in-out font-semibold" href="test-lab.html">
+<span class="material-symbols-outlined text-xl" data-icon="science" data-weight="fill" style="font-variation-settings: 'FILL' 1;">science</span>
+<span>Test Lab</span>
+</a>
+<!-- Live Runs (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="live-runs.html">
+<span class="material-symbols-outlined text-xl" data-icon="monitoring">monitoring</span>
+<span>Live Runs</span>
+</a>
+<!-- History & Reports (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="history.html">
+<span class="material-symbols-outlined text-xl" data-icon="description">description</span>
+<span>History &amp; Reports</span>
+</a>
+<!-- Settings (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="settings.html">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer Component -->
+<div class="pt-4 border-t border-outline-variant/30 flex flex-col gap-3">
+<div class="p-3 bg-surface-container-lowest rounded-xl border border-outline-variant/40 shadow-sm flex items-start gap-2.5">
+<span class="material-symbols-outlined text-tertiary mt-0.5" data-icon="deployed_code">deployed_code</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Docker Lab</span>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="font-body-sm text-body-sm text-secondary">All services running</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between px-2 text-secondary text-body-sm">
+<span class="font-code-mono text-code-mono text-outline">v2.14.0-k6</span>
+<span class="flex items-center gap-1 text-outline hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+<span class="font-label-sm text-label-sm">Docs</span>
+</span>
+</div>
+</div>
+</aside>
+<!-- ================= MAIN CONTENT WRAPPER ================= -->
+<div class="pl-60 flex-1 flex flex-col h-screen overflow-hidden">
+<!-- ================= TOP NAVIGATION BAR (Shared Component: TopNavBar) ================= -->
+<header class="h-14 bg-surface border-b border-outline-variant/30 flex items-center justify-between px-8 w-full shrink-0 z-20">
+<!-- Breadcrumb / Section context -->
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-secondary">Test Lab</span>
+<span class="text-outline-variant font-label-sm">/</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Experiment Builder</span>
+</div>
+<!-- Action items & Trailing status -->
+<div class="flex items-center gap-4">
+<!-- Environment selector pill -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-lg border border-outline-variant/30 text-on-surface text-label-sm font-label-sm cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="dns">dns</span>
+<span class="font-medium">Docker Lab</span>
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="expand_more">expand_more</span>
+</div>
+<!-- Health indicator chip -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-full border border-emerald-200 text-label-sm font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="font-medium">API operational</span>
+</div>
+<!-- Divider -->
+<div class="w-px h-5 bg-outline-variant/40"></div>
+<!-- Trailing action icons -->
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Notifications" type="button">
+<span class="material-symbols-outlined text-xl" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Theme" type="button">
+<span class="material-symbols-outlined text-xl" data-icon="dark_mode">dark_mode</span>
+</button>
+</div>
+<!-- User Avatar CV -->
+<div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center font-label-sm text-label-sm font-semibold tracking-wider cursor-pointer shadow-sm ring-2 ring-primary/20">
+          CV
+        </div>
+</div>
+</header>
+<!-- ================= WORKSPACE CANVAS ================= -->
+<main class="flex-1 overflow-y-auto px-8 py-6 max-w-[1600px] w-full flex flex-col gap-6">
+<!-- HEADER: Title & Action Cluster -->
+<section class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-outline-variant/20">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Test Lab &amp; Chaos Studio</h1>
+<p class="font-body-md text-body-md text-secondary mt-1">Configure load testing scenarios, inject synthetic latency, packet drops, or simulated outages.</p>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<button class="px-4 py-2 bg-surface-container-lowest text-on-surface border border-outline-variant/50 hover:bg-surface-container-low hover:border-outline-variant font-label-md text-label-md rounded-lg shadow-sm transition-all duration-150 flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-lg text-secondary" data-icon="restart_alt">restart_alt</span>
+<span>Reset Defaults</span>
+</button>
+<button class="px-4 py-2 bg-primary-container text-white hover:bg-blue-700 font-label-md text-label-md rounded-lg shadow-sm transition-all duration-150 flex items-center gap-2 font-semibold ring-1 ring-blue-600/50" type="button">
+<span>Ã°Å¸Å¡â‚¬</span>
+<span>Launch Experiment</span>
+</button>
+</div>
+</section>
+<!-- THREE-COLUMN INTERACTIVE BUILDER LAYOUT -->
+<div class="grid grid-cols-12 gap-5 items-start">
+<!-- ================= COLUMN 1: PRESETS (w-80 / col-span-3) ================= -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-surface-container-high text-primary font-code-mono text-code-mono text-xs">1</span>
+<span>Select Scenario Preset</span>
+</h2>
+<span class="font-label-sm text-label-sm text-secondary">5 presets</span>
+</div>
+<div class="flex flex-col gap-2.5">
+<!-- Preset 1: Baseline Load -->
+<label class="relative flex flex-col p-3.5 bg-surface-container-lowest border border-outline-variant/40 rounded-xl cursor-pointer hover:border-primary/50 transition-all hover:shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="preset" type="radio"/>
+<span class="font-headline-sm text-headline-sm text-on-surface">Baseline Load</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-code-mono bg-surface-container text-secondary">100-1k VUs</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5 pl-6">100 - 1,000 VUs, regular API wallet transfers.</p>
+</label>
+<!-- Preset 2: Spike Drill -->
+<label class="relative flex flex-col p-3.5 bg-surface-container-lowest border border-outline-variant/40 rounded-xl cursor-pointer hover:border-primary/50 transition-all hover:shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="preset" type="radio"/>
+<span class="font-headline-sm text-headline-sm text-on-surface">Spike Drill</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-code-mono bg-amber-50 text-amber-700 border border-amber-200">5k VUs / 30s</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5 pl-6">Sudden surge to 5,000 VUs in 30 seconds.</p>
+</label>
+<!-- Preset 3: High Latency (SELECTED) -->
+<label class="relative flex flex-col p-3.5 bg-blue-50/40 border-2 border-primary rounded-xl cursor-pointer shadow-sm ring-2 ring-primary/10">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4 border-primary" name="preset" type="radio"/>
+<span class="font-headline-sm text-headline-sm text-primary font-semibold">High Latency</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-code-mono bg-primary text-white font-medium">+350ms</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5 pl-6">Simulates downstream bank gateway degradation (+350ms).</p>
+<div class="mt-2.5 pl-6 flex items-center gap-2 text-xs text-primary font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+<span>Active configuration profile</span>
+</div>
+</label>
+<!-- Preset 4: Network Packet Drop -->
+<label class="relative flex flex-col p-3.5 bg-surface-container-lowest border border-outline-variant/40 rounded-xl cursor-pointer hover:border-primary/50 transition-all hover:shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="preset" type="radio"/>
+<span class="font-headline-sm text-headline-sm text-on-surface">Network Packet Drop</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-code-mono bg-red-50 text-error border border-error-container">2.5% loss</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5 pl-6">Simulates flaky mobile mesh network (2.5% loss).</p>
+</label>
+<!-- Preset 5: Custom Scenario -->
+<label class="relative flex flex-col p-3.5 bg-surface-container-lowest border border-outline-variant/40 rounded-xl cursor-pointer hover:border-primary/50 transition-all hover:shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="preset" type="radio"/>
+<span class="font-headline-sm text-headline-sm text-on-surface">Custom Scenario</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-code-mono bg-surface-container text-secondary">JS / k6</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5 pl-6">User-defined k6 script repository.</p>
+</label>
+</div>
+</div>
+<!-- ================= COLUMN 2: LOAD PROFILE (flex-1 / col-span-5) ================= -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-surface-container-high text-primary font-code-mono text-code-mono text-xs">2</span>
+<span>Load Profile (k6 Engine)</span>
+</h2>
+<div class="flex items-center gap-1.5 text-xs text-secondary font-code-mono">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>Distributed Runners (x4)</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-sm flex flex-col gap-5">
+<!-- Target Endpoint Configuration -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface font-medium flex items-center justify-between">
+<span>Target API Endpoint</span>
+<span class="font-code-mono text-code-mono text-secondary">JSON Body Payload</span>
+</label>
+<div class="flex rounded-lg shadow-sm border border-outline-variant/60 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 overflow-hidden">
+<span class="inline-flex items-center px-3 bg-surface-container text-on-surface font-code-mono text-code-mono font-semibold border-r border-outline-variant/60">
+                  POST
+                </span>
+<input class="block w-full border-0 py-2 px-3 text-on-surface font-code-mono text-code-mono focus:ring-0 placeholder:text-outline" placeholder="https://api..." type="text" value="https://api.finftech.local/v1/wallet/transfer"/>
+</div>
+</div>
+<!-- Bearer Token input -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-medium flex items-center justify-between">
+<span>Authorization Header</span>
+<span class="text-xs text-emerald-700 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="lock">lock</span>
+<span>Vault Secret Injected</span>
+</span>
+</label>
+<div class="relative rounded-lg shadow-sm border border-outline-variant/60 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+<input class="block w-full border-0 py-2 pl-3 pr-10 text-on-surface font-code-mono text-code-mono focus:ring-0" type="password" value="finf_sec_token_9921_xX89_live_resilience_test"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-secondary hover:text-on-surface">
+<span class="material-symbols-outlined text-sm" data-icon="visibility">visibility</span>
+</div>
+</div>
+</div>
+<div class="h-px bg-outline-variant/30"></div>
+<!-- Virtual Users Slider -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface font-medium">Virtual Users (VUs)</label>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-mono text-headline-sm font-bold text-primary">2,500</span>
+<span class="font-label-sm text-label-sm text-secondary">VUs</span>
+</div>
+</div>
+<input class="w-full accent-primary h-2 bg-surface-container rounded-lg appearance-none cursor-pointer" max="10000" min="100" step="100" type="range" value="2500"/>
+<div class="flex justify-between font-code-mono text-[11px] text-secondary">
+<span>Min: 100</span>
+<span>Peak: 2,500 (Selected)</span>
+<span>Max: 10,000</span>
+</div>
+</div>
+<!-- Test Duration & Ramp-up Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-medium">Test Duration</label>
+<div class="relative">
+<select class="w-full rounded-lg border border-outline-variant/60 py-2 pl-3 pr-8 text-on-surface font-body-md bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20">
+<option>5m</option>
+<option selected="">10m</option>
+<option>15m</option>
+<option>30m</option>
+<option>1h</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-medium">Ramp-up Time</label>
+<div class="relative">
+<select class="w-full rounded-lg border border-outline-variant/60 py-2 pl-3 pr-8 text-on-surface font-body-md bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20">
+<option>30s</option>
+<option>1m</option>
+<option selected="">2m gradual slope</option>
+<option>5m steady step</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Traffic shape visual preview -->
+<div class="flex flex-col gap-2 pt-1">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-secondary font-medium">Traffic Shape Curve Preview</span>
+<span class="font-code-mono text-code-mono text-outline">Ramp: 2m Ã¢â‚¬Â¢ Hold: 6m Ã¢â‚¬Â¢ Cool: 2m</span>
+</div>
+<div class="w-full h-24 bg-surface-container-low rounded-lg p-2.5 border border-outline-variant/30 flex flex-col justify-end relative overflow-hidden">
+<!-- Grid background simulation -->
+<div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#004ac6 1px, transparent 1px); background-size: 12px 12px;"></div>
+<!-- SVG Load Profile Curve -->
+<svg class="w-full h-full overflow-visible z-10" preserveaspectratio="none" viewbox="0 0 400 65">
+<defs>
+<lineargradient id="loadGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#2563eb" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#2563eb" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Gradient fill under curve -->
+<polygon fill="url(#loadGrad)" points="0,60 80,12 320,12 400,60"></polygon>
+<!-- Stroke line -->
+<polyline fill="none" points="0,60 80,12 320,12 400,60" stroke="#2563eb" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<!-- Markers -->
+<circle cx="80" cy="12" fill="#ffffff" r="3.5" stroke="#2563eb" stroke-width="2"></circle>
+<circle cx="320" cy="12" fill="#ffffff" r="3.5" stroke="#2563eb" stroke-width="2"></circle>
+</svg>
+<div class="flex justify-between items-center text-[10px] font-code-mono text-secondary pt-1 border-t border-outline-variant/30 z-10">
+<span>0m (0 VUs)</span>
+<span class="text-primary font-semibold">2m (2,500 VUs Peak)</span>
+<span class="text-primary font-semibold">8m</span>
+<span>10m (0 VUs)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= COLUMN 3: CHAOS & FAULT INJECTION (w-80 / col-span-4) ================= -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-surface-container-high text-primary font-code-mono text-code-mono text-xs">3</span>
+<span>Chaos &amp; Fault Injection (Toxiproxy)</span>
+</h2>
+<span class="material-symbols-outlined text-secondary" data-icon="bolt">bolt</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-sm flex flex-col gap-5">
+<!-- Toggle: Enable Toxiproxy Mesh (ON) -->
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-outline-variant/30">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Enable Toxiproxy Mesh</span>
+<span class="font-body-sm text-body-sm text-secondary">Inject faults via sidecar proxies</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<!-- Downstream Latency Slider -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface font-medium">Downstream Latency</label>
+<span class="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 font-code-mono text-headline-sm font-bold text-amber-800">350 ms</span>
+</div>
+<input class="w-full accent-amber-600 h-2 bg-surface-container rounded-lg appearance-none cursor-pointer" max="1000" min="0" step="25" type="range" value="350"/>
+<div class="flex justify-between items-center text-xs text-secondary">
+<span>0 ms</span>
+<span class="font-code-mono text-[11px] text-amber-800">+/- 50ms jitter enabled</span>
+<span>1,000 ms</span>
+</div>
+</div>
+<!-- Packet Drop Rate Slider -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface font-medium">Packet Drop Rate</label>
+<span class="px-2 py-0.5 rounded bg-red-50 border border-red-200 font-code-mono text-headline-sm font-bold text-error">1.5%</span>
+</div>
+<input class="w-full accent-error h-2 bg-surface-container rounded-lg appearance-none cursor-pointer" max="10" min="0" step="0.1" type="range" value="1.5"/>
+<div class="flex justify-between items-center text-xs text-secondary">
+<span>0%</span>
+<span class="font-code-mono text-[11px] text-secondary">Normal mobile drift</span>
+<span>10%</span>
+</div>
+</div>
+<!-- Socket Timeout Cut toggle: OFF -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-medium">Socket Timeout Cut</span>
+<span class="font-body-sm text-body-sm text-secondary">Hard drop connection after 500ms</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="h-px bg-outline-variant/30"></div>
+<!-- Impact / Blast Radius Estimate Card -->
+<div class="bg-surface-container rounded-xl p-4 border border-outline-variant/50 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="troubleshoot">troubleshoot</span>
+<span>Estimated Blast Radius</span>
+</span>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">Within Thresholds</span>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-1">
+<div class="p-2.5 bg-surface-container-lowest rounded-lg border border-outline-variant/30 flex flex-col">
+<span class="font-body-sm text-body-sm text-secondary">Throughput</span>
+<span class="font-metric-stat text-headline-sm font-bold text-on-surface">1,850 <span class="text-xs font-normal text-secondary">RPS</span></span>
+</div>
+<div class="p-2.5 bg-surface-container-lowest rounded-lg border border-outline-variant/30 flex flex-col">
+<span class="font-body-sm text-body-sm text-secondary">P99 SLA Threshold</span>
+<span class="font-metric-stat text-headline-sm font-bold text-amber-700">750 <span class="text-xs font-normal text-secondary">ms</span></span>
+</div>
+</div>
+<!-- Microservices affected list -->
+<div class="flex items-center justify-between text-body-sm text-secondary px-1">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="account_tree">account_tree</span>
+<span>Affected Microservices:</span>
+</span>
+<span class="font-code-mono text-code-mono font-semibold text-on-surface">4 services</span>
+</div>
+<div class="flex flex-wrap gap-1.5 px-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant/40 font-code-mono text-[11px] text-secondary">auth-svc</span>
+<span class="px-2 py-0.5 rounded bg-amber-50 border border-amber-300 font-code-mono text-[11px] text-amber-900 font-medium">ledger-core (target)</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant/40 font-code-mono text-[11px] text-secondary">fraud-check</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant/40 font-code-mono text-[11px] text-secondary">notify-gateway</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= BOTTOM BANNER: VALIDATION STATUS & LAUNCH ================= -->
+<section class="mt-auto bg-surface-container-lowest border border-outline-variant/50 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl" data-icon="verified">verified</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Configuration Validated</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                Ready to run
+              </span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary">Target: <code class="font-code-mono text-xs text-on-surface bg-surface-container px-1 py-0.5 rounded">POST /v1/wallet/transfer</code> Ã¢â‚¬Â¢ 2,500 VUs Ã¢â‚¬Â¢ Latency injected +350ms (+/-50ms) Ã¢â‚¬Â¢ Estimated 10 mins runtime</span>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<button class="px-3.5 py-2 bg-surface-container-low text-secondary hover:text-on-surface font-label-md text-label-md rounded-lg transition-colors border border-outline-variant/40 flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+<span>Export k6 Script</span>
+</button>
+<button class="px-5 py-2.5 bg-primary-container text-white hover:bg-blue-700 font-label-md text-label-md rounded-lg shadow transition-all duration-150 flex items-center gap-2 font-semibold ring-2 ring-primary/20" type="button">
+<span>Ã°Å¸Å¡â‚¬</span>
+<span>Launch Experiment</span>
+</button>
+</div>
+</section>
+</main>
+</div>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/app.js"></script>
+</body></html>

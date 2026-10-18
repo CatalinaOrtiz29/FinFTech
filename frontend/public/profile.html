@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinFTech - User Profile &amp; Team Management</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-container": "#5c647a",
+            "surface-bright": "#f8f9ff",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed": "#131b2e",
+            "secondary": "#565e74",
+            "on-tertiary-container": "#bdffdb",
+            "outline": "#737686",
+            "on-error-container": "#93000a",
+            "primary-container": "#2563eb",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#005236",
+            "outline-variant": "#c3c6d7",
+            "primary-fixed-dim": "#b4c5ff",
+            "surface-dim": "#cbdbf5",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "secondary-container": "#dae2fd",
+            "inverse-on-surface": "#eaf1ff",
+            "surface-variant": "#d3e4fe",
+            "surface": "#f8f9ff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#eeefff",
+            "inverse-primary": "#b4c5ff",
+            "on-surface-variant": "#434655",
+            "background": "#f8f9ff",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-highest": "#d3e4fe",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-error": "#ffffff",
+            "on-background": "#0b1c30",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-container-low": "#eff4ff",
+            "secondary-fixed-dim": "#bec6e0",
+            "tertiary-container": "#007d55",
+            "on-tertiary-fixed": "#002113",
+            "error": "#ba1a1a",
+            "tertiary-fixed-dim": "#4edea3",
+            "inverse-surface": "#213145",
+            "tertiary": "#006242",
+            "on-primary-fixed-variant": "#003ea8",
+            "secondary-fixed": "#dae2fd",
+            "primary": "#004ac6",
+            "on-primary-fixed": "#00174b",
+            "surface-container": "#e5eeff",
+            "surface-tint": "#0053db",
+            "on-surface": "#0b1c30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.25rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "display": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "metric-stat": ["Inter"],
+            "code-mono": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["15px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "metric-stat": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-mono": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/finftech.css"/>
+</head>
+<body class="h-full bg-surface text-on-surface antialiased font-body-md text-body-md selection:bg-secondary-container selection:text-on-secondary-fixed" data-page="profile">
+<!-- SideNavBar Anchor -->
+<aside class="fixed top-0 left-0 h-screen w-60 z-30 bg-surface dark:bg-surface-container-low border-r border-outline-variant dark:border-outline w-60 h-screen flex flex-col justify-between p-4">
+<!-- Top Brand & Cluster Anchor -->
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 px-2 pt-1">
+<div class="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm shadow-primary/20">
+<span class="material-symbols-outlined text-[18px]">hub</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm text-on-surface dark:text-inverse-on-surface font-bold tracking-tight">FinFTech</span>
+<span class="text-[11px] leading-tight text-on-surface-variant font-code-mono">Production Cluster US-East</span>
+</div>
+</div>
+<!-- Quick Action CTA -->
+<button class="w-full flex items-center justify-center gap-2 bg-primary-container text-on-primary h-9 rounded-lg font-label-md text-label-md shadow-sm transition-all duration-150 ease-in-out active:scale-[0.98] hover:bg-primary">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+<span>Run Chaos Test</span>
+</button>
+<!-- Main Navigation Menu -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-outline-variant font-normal hover:bg-surface-container-low dark:hover:bg-surface-container hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors duration-150 transition-all duration-150 ease-in-out active:scale-[0.98]" href="dashboard.html">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span class="text-label-md font-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-outline-variant font-normal hover:bg-surface-container-low dark:hover:bg-surface-container hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors duration-150 transition-all duration-150 ease-in-out active:scale-[0.98]" href="test-lab.html">
+<span class="material-symbols-outlined text-[18px]">science</span>
+<span class="text-label-md font-label-md">Test Lab</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-outline-variant font-normal hover:bg-surface-container-low dark:hover:bg-surface-container hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors duration-150 transition-all duration-150 ease-in-out active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+<span class="text-label-md font-label-md">Live Runs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-outline-variant font-normal hover:bg-surface-container-low dark:hover:bg-surface-container hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors duration-150 transition-all duration-150 ease-in-out active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+<span class="text-label-md font-label-md">History &amp; Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-outline-variant font-normal hover:bg-surface-container-low dark:hover:bg-surface-container hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors duration-150 transition-all duration-150 ease-in-out active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Secondary Navigation -->
+<div class="flex flex-col gap-1 pt-4 border-t border-outline-variant/50">
+<!-- Active Destination: Profile & Team Settings -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-container-high dark:bg-surface-container text-primary dark:text-inverse-primary font-medium transition-all duration-150 ease-in-out active:scale-[0.98]" href="profile.html">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span class="text-label-md font-label-md">Team &amp; Profile</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-outline-variant font-normal hover:bg-surface-container-low dark:hover:bg-surface-container hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors duration-150 transition-all duration-150 ease-in-out active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span class="text-label-md font-label-md">Documentation</span>
+</a>
+<!-- Quick Session Footer -->
+<div class="mt-3 p-2.5 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="h-7 w-7 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-code-mono text-label-sm font-semibold">
+            CV
+          </div>
+<div class="flex flex-col leading-tight">
+<span class="text-label-sm font-label-sm text-on-surface font-semibold truncate max-w-[95px]">Claire Vance</span>
+<span class="text-[11px] text-on-surface-variant">SRE Staff Lead</span>
+</div>
+</div>
+<button class="text-outline hover:text-on-surface p-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Header -->
+<header class="flex justify-between items-center h-14 px-6 ml-60 w-[calc(100%-15rem)] fixed top-0 right-0 z-20 bg-surface dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none">
+<!-- Left: Breadcrumb Context -->
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant text-body-sm font-body-sm">Account</span>
+<span class="text-outline text-body-sm">/</span>
+<span class="text-on-surface text-headline-sm font-headline-sm font-semibold">Profile &amp; Team Settings</span>
+<div class="h-4 w-px bg-outline-variant mx-2"></div>
+<!-- API Operational Badge -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant border border-tertiary-container/20">
+<span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span>
+<span class="text-label-sm font-label-sm">API Systems Nominal</span>
+</div>
+</div>
+<!-- Right: Cluster Links, Trailing Actions & Avatar -->
+<div class="flex items-center gap-4">
+<!-- Search Quick Key -->
+<div class="relative w-64 hidden xl:block">
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-[18px] text-outline">search</span>
+<input class="h-8 w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-8 pr-12 text-body-sm font-body-sm placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search members, keys, tokens..." type="text"/>
+<span class="absolute right-2 top-1.5 px-1.5 py-0.5 rounded border border-outline-variant bg-surface text-[10px] text-outline font-code-mono">Ã¢Å’ËœK</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<button class="p-1.5 rounded-lg hover:bg-surface-container-low hover:text-on-surface text-outline transition-colors relative" title="Notifications">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary-container"></span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-low hover:text-on-surface text-outline transition-colors" title="Help &amp; Docs">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+</button>
+</div>
+<div class="h-5 w-px bg-outline-variant"></div>
+<!-- Action Button -->
+<button class="h-8 px-3 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low hover:border-outline transition-all active:scale-[0.98] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">play_arrow</span>
+<span>Trigger Simulation</span>
+</button>
+<!-- Profile Avatar -->
+<div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-code-mono text-label-sm font-semibold ring-2 ring-primary-fixed">
+        CV
+      </div>
+</div>
+</header>
+<!-- Main Canvas Container -->
+<main class="ml-60 pt-20 pb-12 px-8 min-h-screen">
+<div class="max-w-[1400px] mx-auto flex flex-col gap-6">
+<!-- Top Title and Section Explainer -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+<div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">Profile &amp; Team Management</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Manage operator credentials, team access matrices, CLI integration tokens, and incident alerting pipelines.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="h-9 px-3.5 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface text-label-md font-label-md hover:bg-surface hover:border-outline transition-all">
+            Audit Trail
+          </button>
+<button class="h-9 px-4 rounded-lg bg-primary-container text-on-primary text-label-md font-label-md shadow-sm hover:bg-primary transition-all active:scale-[0.98] flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span>Invite Teammate</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid: Top Tier (Profile Details + Notification Channels) -->
+<div class="grid grid-cols-12 gap-5">
+<!-- 1. Profile Details Card (Spans 7 cols) -->
+<section class="col-span-12 lg:col-span-7 bg-surface-container-lowest border border-outline-variant/70 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant/40">
+<div class="flex items-center gap-2.5">
+<div class="h-8 w-8 rounded-lg bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Staff Profile</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Primary workspace identity &amp; operator privileges</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-on-surface text-label-sm font-code-mono">
+                UID: sre-lead-8823
+              </span>
+</div>
+<!-- Avatar & Form Container -->
+<div class="pt-5 flex flex-col sm:flex-row gap-6 items-start">
+<!-- Avatar Upload Block -->
+<div class="flex flex-col items-center gap-3">
+<div class="relative group">
+<div class="h-20 w-20 rounded-xl bg-gradient-to-tr from-primary to-primary-container text-on-primary flex items-center justify-center font-code-mono text-2xl font-bold tracking-wider shadow-inner">
+                    CV
+                  </div>
+<button class="absolute inset-0 bg-on-background/50 text-surface-container-lowest rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[20px]">upload</span>
+<span class="text-[10px] font-medium">Change</span>
+</button>
+</div>
+<div class="text-center">
+<button class="text-label-sm font-label-sm text-primary hover:underline">Upload photo</button>
+<p class="text-[11px] text-outline mt-0.5">JPG, PNG max 2MB</p>
+</div>
+</div>
+<!-- Input Grid -->
+<div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+<div class="flex flex-col gap-1.5">
+<label class="text-label-sm font-label-sm text-on-surface-variant font-medium">Full Name</label>
+<input class="h-9 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-body-md font-body-md focus:border-primary-container focus:ring-1 focus:ring-primary-container" type="text" value="Claire Vance"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-label-sm font-label-sm text-on-surface-variant font-medium">Cluster Role</label>
+<div class="h-9 px-3 rounded-lg border border-outline-variant/60 bg-surface text-on-surface text-body-md font-body-md flex items-center justify-between cursor-not-allowed">
+<span class="font-medium text-primary">SRE Staff Lead</span>
+<span class="material-symbols-outlined text-[16px] text-outline">lock</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-label-sm font-label-sm text-on-surface-variant font-medium">Email Address</label>
+<input class="h-9 px-3 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-body-md font-body-md focus:border-primary-container focus:ring-1 focus:ring-primary-container" type="email" value="c.vance@finftech.io"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-label-sm font-label-sm text-on-surface-variant font-medium">Operational Timezone</label>
+<div class="relative">
+<select class="h-9 w-full appearance-none pl-3 pr-8 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface text-body-md font-body-md focus:border-primary-container focus:ring-1 focus:ring-primary-container">
+<option selected="">UTC+00:00 (Universal Time Coordinated)</option>
+<option>America/New_York (UTC-05:00)</option>
+<option>Europe/London (UTC+01:00)</option>
+<option>Asia/Tokyo (UTC+09:00)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2.5 text-[16px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/40 flex items-center justify-between">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary">verified_user</span>
+              2FA hardware key enforced (YubiKey OTP)
+            </span>
+<button class="h-8 px-4 rounded-lg bg-surface border border-outline-variant text-on-surface text-label-md font-label-md hover:bg-surface-container-low transition-colors">
+              Save Profile Changes
+            </button>
+</div>
+</section>
+<!-- 2. Alert & Webhook Preferences (Spans 5 cols) -->
+<section class="col-span-12 lg:col-span-5 bg-surface-container-lowest border border-outline-variant/70 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant/40">
+<div class="flex items-center gap-2.5">
+<div class="h-8 w-8 rounded-lg bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">notifications_active</span>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Incident Alert Prefs</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Escalation path &amp; SLA breach triggers</p>
+</div>
+</div>
+<span class="h-2 w-2 rounded-full bg-tertiary"></span>
+</div>
+<!-- Notification Channels List -->
+<div class="pt-4 flex flex-col gap-3">
+<!-- Slack Webhook -->
+<div class="p-3 rounded-lg border border-outline-variant/60 bg-surface flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-md bg-surface-container-lowest border border-outline-variant/60 flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[18px]">tag</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-md font-label-md font-semibold text-on-surface">Slack Webhook</span>
+<span class="text-[10px] px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-code-mono">ACTIVE</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant font-code-mono text-[11px]">#sre-tier1-chaos-war-room</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<!-- PagerDuty Service -->
+<div class="p-3 rounded-lg border border-outline-variant/60 bg-surface flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-md bg-surface-container-lowest border border-outline-variant/60 flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[18px]">crisis_alert</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-md font-label-md font-semibold text-on-surface">PagerDuty On-Call</span>
+<span class="text-[10px] px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-code-mono">CRITICAL</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant font-code-mono text-[11px]">EP-P5-CHAOS-RECOVERY</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<!-- Email Alerts on SLA Breaches -->
+<div class="p-3 rounded-lg border border-outline-variant/60 bg-surface flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-md bg-surface-container-lowest border border-outline-variant/60 flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[18px]">forward_to_inbox</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label-md font-label-md font-semibold text-on-surface">Email on SLA Breach</span>
+<span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-variant text-on-surface-variant font-code-mono">p99 &gt; 250ms</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant font-code-mono text-[11px]">c.vance@finftech.io</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex justify-between items-center text-body-sm">
+<span class="text-outline text-body-sm font-body-sm">Last dispatch: 14 mins ago</span>
+<button class="text-label-sm font-label-sm text-primary hover:underline">Configure Webhook URIs</button>
+</div>
+</section>
+</div>
+<!-- 3. API Keys & CLI Auth Section (Level 1 Card) -->
+<section class="bg-surface-container-lowest border border-outline-variant/70 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-outline-variant/40 gap-3">
+<div class="flex items-center gap-2.5">
+<div class="h-8 w-8 rounded-lg bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">API Keys &amp; CLI Authentication</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Personal CLI token for automated k6 runner integration and CI/CD pipelines</p>
+</div>
+</div>
+<button class="h-8 px-3 rounded-lg bg-surface border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center gap-1.5 self-start sm:self-auto">
+<span class="material-symbols-outlined text-[16px] text-primary">add</span>
+<span>Generate New Secret</span>
+</button>
+</div>
+<div class="pt-5 grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Main Active Token Box -->
+<div class="lg:col-span-2 p-4 rounded-xl bg-surface border border-outline-variant/70 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm font-label-sm font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">key</span>
+                  Personal CLI Session Token (k6-chaos-runner)
+                </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[11px] font-medium font-code-mono">
+<span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span> ACTIVE
+                </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">Scoped to inject synthetic network latency, pod kill permutations, and scrape telemetry.</p>
+<!-- Token Display & Copy Bar -->
+<div class="relative flex items-center">
+<input class="h-10 w-full pl-3 pr-28 rounded-lg border border-outline-variant bg-surface-container-lowest font-code-mono text-code-mono text-on-surface select-all focus:outline-none" readonly="" type="password" value="cc_sec_live_948f29402a1b9487c0e81c0029b47e23114a"/>
+<div class="absolute right-1 flex items-center gap-1">
+<button class="h-8 px-2.5 rounded-md hover:bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1 text-label-sm" onclick="const input = this.closest('div').previousElementSibling; input.type = input.type === 'password' ? 'text' : 'password';" title="Show Secret">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+<button class="h-8 px-2.5 rounded-md bg-primary-container text-on-primary hover:bg-primary transition-colors flex items-center gap-1 text-label-sm font-label-sm" onclick="navigator.clipboard.writeText('cc_sec_live_948f29402a1b9487c0e81c0029b47e23114a')">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+<span>Copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Metadata footer -->
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex flex-wrap items-center justify-between gap-2 text-[12px] font-code-mono text-on-surface-variant">
+<span>Created: <strong class="text-on-surface">2024-11-12 (UTC)</strong></span>
+<span>Expires: <strong class="text-on-surface">2025-05-12 (in 154 days)</strong></span>
+<span class="text-outline">Last Used: 4 mins ago by GitHub Actions Runner</span>
+</div>
+</div>
+<!-- CLI Quick Usage Box -->
+<div class="p-4 rounded-xl bg-surface border border-outline-variant/70 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-[18px] text-primary">data_object</span>
+<span class="text-label-sm font-label-sm font-semibold text-on-surface">Quick CLI Login Command</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">Execute directly in terminal before triggering k6 scenarios:</p>
+<div class="bg-surface-container-lowest p-2.5 rounded-lg border border-outline-variant text-[11px] font-code-mono text-on-surface relative group">
+<code class="text-primary font-medium">chaosctl auth login \</code><br/>
+<code class="text-outline">--token=cc_sec_live_...</code>
+<button class="absolute top-2 right-2 text-outline hover:text-on-surface" onclick="navigator.clipboard.writeText('chaosctl auth login --token=cc_sec_live_948f29402a1b9487c0e81c0029b47e23114a')">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="mt-4 flex items-center justify-between text-body-sm">
+<span class="text-outline text-label-sm">Requires CLI v2.14+</span>
+<a class="text-primary text-label-sm font-label-sm hover:underline" href="#">CLI Specs Ã¢â€ â€™</a>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Team Members & Access Management (Spans Full Width) -->
+<section class="bg-surface-container-lowest border border-outline-variant/70 rounded-xl overflow-hidden shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]">
+<!-- Card Header -->
+<div class="p-5 pb-4 border-b border-outline-variant/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex items-center gap-2.5">
+<div class="h-8 w-8 rounded-lg bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">group</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Team Members &amp; Access Control</h2>
+<span class="text-label-sm font-code-mono px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">5 Active Operators</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Define cluster roles, permission scopes, and fault execution privileges</p>
+</div>
+</div>
+<!-- Table Controls -->
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-[16px] text-outline">filter_list</span>
+<select class="h-8 pl-8 pr-7 rounded-lg border border-outline-variant bg-surface text-label-sm font-label-sm text-on-surface focus:outline-none">
+<option>All Roles</option>
+<option>Owner</option>
+<option>SRE Engineer</option>
+<option>Viewer</option>
+</select>
+</div>
+<button class="h-8 px-3 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md shadow-sm hover:bg-primary transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">person_add</span>
+<span>Invite Teammate</span>
+</button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface border-b border-outline-variant/60 text-label-sm font-label-sm text-on-surface-variant h-10">
+<th class="py-2.5 px-5 font-semibold">Teammate</th>
+<th class="py-2.5 px-4 font-semibold">Workspace Role</th>
+<th class="py-2.5 px-4 font-semibold">Access Scope</th>
+<th class="py-2.5 px-4 font-semibold">Status</th>
+<th class="py-2.5 px-4 font-semibold text-right">Last Execution</th>
+<th class="py-2.5 px-5 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 text-body-sm font-body-sm">
+<!-- Member 1: Claire Vance (Owner/Lead) -->
+<tr class="hover:bg-surface/70 transition-colors">
+<td class="py-3.5 px-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-on-primary font-code-mono font-semibold text-label-sm">
+                      CV
+                    </div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="text-label-md font-label-md text-on-surface font-semibold">Claire Vance</span>
+<span class="text-[10px] font-code-mono text-primary bg-primary-fixed px-1.5 rounded">YOU</span>
+</div>
+<span class="text-outline text-body-sm">c.vance@finftech.io</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm font-medium">
+<span class="material-symbols-outlined text-[14px]">shield</span>
+                    Owner
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-code-mono text-[12px] text-on-surface">cluster:prod-us-east/* (Root)</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[12px] font-medium font-code-mono">
+<span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span> Active
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right font-code-mono text-[12px] text-on-surface-variant">
+                  Today, 14:22 UTC
+                </td>
+<td class="py-3.5 px-5 text-right">
+<button class="p-1 rounded hover:bg-surface-container-low text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member 2: Alex Mercer (SRE Engineer) -->
+<tr class="hover:bg-surface/70 transition-colors">
+<td class="py-3.5 px-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-code-mono font-semibold text-label-sm">
+                      AM
+                    </div>
+<div>
+<span class="text-label-md font-label-md text-on-surface font-semibold">Alex Mercer</span>
+<p class="text-outline text-body-sm">a.mercer@finftech.io</p>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm font-medium">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+                    SRE Engineer
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-code-mono text-[12px] text-on-surface-variant">k8s:core-payment-gateway</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[12px] font-medium font-code-mono">
+<span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span> Active
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right font-code-mono text-[12px] text-on-surface-variant">
+                  Yesterday, 09:15 UTC
+                </td>
+<td class="py-3.5 px-5 text-right">
+<button class="p-1 rounded hover:bg-surface-container-low text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member 3: Devon Brooks (SRE Engineer) -->
+<tr class="hover:bg-surface/70 transition-colors">
+<td class="py-3.5 px-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center font-code-mono font-semibold text-label-sm">
+                      DB
+                    </div>
+<div>
+<span class="text-label-md font-label-md text-on-surface font-semibold">Devon Brooks</span>
+<p class="text-outline text-body-sm">d.brooks@finftech.io</p>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm font-medium">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+                    SRE Engineer
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-code-mono text-[12px] text-on-surface-variant">k8s:auth-ledger, api-router</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[12px] font-medium font-code-mono">
+<span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span> Active
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right font-code-mono text-[12px] text-on-surface-variant">
+                  Nov 14, 18:40 UTC
+                </td>
+<td class="py-3.5 px-5 text-right">
+<button class="p-1 rounded hover:bg-surface-container-low text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member 4: Elena Rostova (Viewer / Auditor) -->
+<tr class="hover:bg-surface/70 transition-colors">
+<td class="py-3.5 px-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-code-mono font-semibold text-label-sm">
+                      ER
+                    </div>
+<div>
+<span class="text-label-md font-label-md text-on-surface font-semibold">Elena Rostova</span>
+<p class="text-outline text-body-sm">e.rostova@finftech.io</p>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm font-medium">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+                    Viewer
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-code-mono text-[12px] text-outline">Read-Only Telemetry Scopes</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[12px] font-medium font-code-mono">
+<span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span> Active
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right font-code-mono text-[12px] text-outline">
+                  Never Executed
+                </td>
+<td class="py-3.5 px-5 text-right">
+<button class="p-1 rounded hover:bg-surface-container-low text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Member 5: Tarun Kapoor (Invited / Pending SRE) -->
+<tr class="hover:bg-surface/70 transition-colors">
+<td class="py-3.5 px-5">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full border border-dashed border-outline text-outline flex items-center justify-center font-code-mono font-semibold text-label-sm">
+                      TK
+                    </div>
+<div>
+<span class="text-label-md font-label-md text-on-surface font-semibold">Tarun Kapoor</span>
+<p class="text-outline text-body-sm">t.kapoor@finftech.io</p>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm font-medium">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+                    SRE Engineer
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-code-mono text-[12px] text-outline">Pending Invitation Accept</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-outline text-[12px] font-medium font-code-mono">
+<span class="h-1.5 w-1.5 rounded-full bg-outline"></span> Invitation Sent
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right font-code-mono text-[12px] text-outline">
+                  Ã¢â‚¬â€
+                </td>
+<td class="py-3.5 px-5 text-right">
+<button class="text-label-sm font-label-sm text-primary hover:underline">Resend</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination Footer -->
+<div class="p-4 bg-surface border-t border-outline-variant/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-body-sm">
+<span class="text-on-surface-variant font-body-sm">Showing <strong>1 to 5</strong> of 5 workspace members</span>
+<div class="flex items-center gap-2">
+<button class="h-8 px-3 rounded-md bg-surface-container-lowest border border-outline-variant text-outline cursor-not-allowed" disabled="">Previous</button>
+<button class="h-8 px-3 rounded-md bg-surface-container-lowest border border-outline-variant text-outline cursor-not-allowed" disabled="">Next</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/app.js"></script>
+</body></html>

@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinFTech - Load &amp; Resilience Lab | Performance Overview</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-error": "#ffffff",
+            "surface-variant": "#d3e4fe",
+            "on-tertiary-fixed": "#002113",
+            "tertiary-fixed-dim": "#4edea3",
+            "inverse-on-surface": "#eaf1ff",
+            "tertiary": "#006242",
+            "primary-container": "#2563eb",
+            "primary": "#004ac6",
+            "surface-container": "#e5eeff",
+            "on-primary-container": "#eeefff",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed": "#131b2e",
+            "on-secondary-container": "#5c647a",
+            "surface-dim": "#cbdbf5",
+            "on-surface-variant": "#434655",
+            "surface-tint": "#0053db",
+            "surface-container-lowest": "#ffffff",
+            "surface": "#f8f9ff",
+            "secondary": "#565e74",
+            "on-surface": "#0b1c30",
+            "error-container": "#ffdad6",
+            "background": "#f8f9ff",
+            "on-secondary-fixed-variant": "#3f465c",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-highest": "#d3e4fe",
+            "tertiary-fixed": "#6ffbbe",
+            "secondary-container": "#dae2fd",
+            "on-primary-fixed": "#00174b",
+            "on-primary-fixed-variant": "#003ea8",
+            "tertiary-container": "#007d55",
+            "secondary-fixed-dim": "#bec6e0",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#dae2fd",
+            "on-secondary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "primary-fixed-dim": "#b4c5ff",
+            "inverse-primary": "#b4c5ff",
+            "outline-variant": "#c3c6d7",
+            "on-tertiary": "#ffffff",
+            "outline": "#737686",
+            "on-background": "#0b1c30",
+            "on-tertiary-container": "#bdffdb",
+            "inverse-surface": "#213145",
+            "on-error-container": "#93000a",
+            "surface-bright": "#f8f9ff",
+            "surface-container-low": "#eff4ff",
+            "on-tertiary-fixed-variant": "#005236"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xs": "0.25rem",
+            "margin": "1.5rem",
+            "gutter": "1.25rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem"
+          },
+          fontFamily: {
+            "label-sm": ["Inter"],
+            "code-mono": ["JetBrains Mono"],
+            "metric-stat": ["Inter"],
+            "label-md": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "display": ["Inter"]
+          },
+          fontSize: {
+            "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "600" }],
+            "code-mono": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+            "metric-stat": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "label-md": ["13px", { lineHeight: "18px", fontWeight: "500" }],
+            "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+            "headline-sm": ["15px", { lineHeight: "22px", letterSpacing: "-0.005em", fontWeight: "600" }],
+            "headline-md": ["18px", { lineHeight: "26px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.015em", fontWeight: "700" }],
+            "display": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-shadow {
+      box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/finftech.css"/>
+</head>
+<body class="bg-surface dark:bg-inverse-surface text-on-surface dark:text-inverse-on-surface font-body-md antialiased min-h-screen flex selection:bg-primary selection:text-white transition-colors duration-150" data-page="dashboard">
+<!-- Fixed Left Sidebar (SideNavBar) -->
+<aside class="fixed left-0 top-0 bottom-0 w-60 h-screen bg-surface dark:bg-inverse-surface border-r border-outline-variant/30 dark:border-outline/20 z-30">
+<div class="flex flex-col justify-between p-4 w-60 h-full">
+<!-- Top Brand & Navigation -->
+<div class="flex flex-col gap-6">
+<!-- Logo Header -->
+<div class="flex items-center gap-3 px-2 py-1">
+<div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-white shadow-sm">
+<span class="material-symbols-outlined" data-icon="deployed_code" style="font-size: 22px;">deployed_code</span>
+</div>
+<div>
+<div class="text-headline-md font-headline-md font-bold text-on-surface dark:text-inverse-on-surface tracking-tight">FinFTech</div>
+<div class="text-label-sm font-label-sm text-secondary dark:text-secondary-fixed-dim">Load &amp; Resilience Lab</div>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex flex-col space-y-1">
+<!-- Overview (Active) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-container dark:bg-surface-container-high text-primary dark:text-primary-fixed font-label-md text-label-md transition-colors" href="dashboard.html">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="dashboard" style="font-size: 20px;">dashboard</span>
+<span>Overview</span>
+</a>
+<!-- Test Lab (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60 transition-colors" href="test-lab.html">
+<span class="material-symbols-outlined" data-icon="science" style="font-size: 20px;">science</span>
+<span>Test Lab</span>
+</a>
+<!-- Live Runs (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60 transition-colors" href="live-runs.html">
+<span class="material-symbols-outlined" data-icon="monitoring" style="font-size: 20px;">monitoring</span>
+<span>Live Runs</span>
+</a>
+<!-- History & Reports (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60 transition-colors" href="history.html">
+<span class="material-symbols-outlined" data-icon="description" style="font-size: 20px;">description</span>
+<span>History &amp; Reports</span>
+</a>
+<!-- Settings (Inactive) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60 transition-colors" href="settings.html">
+<span class="material-symbols-outlined" data-icon="settings" style="font-size: 20px;">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Environment Card -->
+<div class="p-3 bg-surface-container-lowest dark:bg-slate-800/80 rounded-xl border border-outline-variant/40 dark:border-outline/20 custom-shadow flex items-center justify-between cursor-pointer hover:border-primary-container/40 transition-colors">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-700/80 flex items-center justify-center text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined" data-icon="deployed_code" style="font-size: 18px;">deployed_code</span>
+</div>
+<div>
+<div class="text-[11px] font-semibold text-secondary dark:text-secondary-fixed-dim uppercase tracking-wider">Environment</div>
+<div class="text-body-sm font-label-md text-on-surface dark:text-inverse-on-surface flex items-center gap-1.5 font-medium">
+              Docker Lab
+            </div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">All services running</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right" style="font-size: 18px;">chevron_right</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrap with Top Bar -->
+<div class="flex-1 pl-60 flex flex-col min-h-screen">
+<!-- Top Navigation Bar (TopNavBar) -->
+<header class="h-14 border-b border-outline-variant/30 dark:border-outline/20 bg-surface dark:bg-inverse-surface sticky top-0 z-20 flex items-center justify-between px-8 transition-colors duration-150">
+<!-- Left: Section Title / Breadcrumb -->
+<div class="flex items-center gap-2 text-on-surface dark:text-inverse-on-surface">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim" data-icon="dashboard" style="font-size: 18px;">dashboard</span>
+<span class="text-headline-sm font-headline-sm font-medium">Overview</span>
+</div>
+<!-- Right Trailing Controls -->
+<div class="flex items-center gap-3">
+<!-- Environment selector button -->
+<div class="relative">
+<button class="h-8 px-3 rounded-lg border border-outline-variant/50 dark:border-outline/30 bg-surface-container-lowest dark:bg-slate-800 text-on-surface dark:text-inverse-on-surface font-label-sm text-label-sm flex items-center gap-2 hover:bg-surface-container dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim" data-icon="deployed_code" style="font-size: 16px;">deployed_code</span>
+<span>Docker Lab</span>
+<span class="material-symbols-outlined text-outline" data-icon="expand_more" style="font-size: 16px;">expand_more</span>
+</button>
+</div>
+<!-- API status badge -->
+<div class="h-7 px-2.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/50 flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[12px] font-medium text-emerald-700 dark:text-emerald-300">API operational</span>
+</div>
+<!-- Notifications -->
+<button aria-label="Notifications" class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-slate-800 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications" style="font-size: 19px;">notifications</span>
+</button>
+<!-- Dark / Light Mode Toggle Button -->
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-slate-800 hover:text-on-surface transition-colors" id="theme-toggle" title="Toggle theme (Light / Dark)">
+<span class="material-symbols-outlined block dark:hidden" data-icon="dark_mode" style="font-size: 19px;">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block text-amber-300" data-icon="light_mode" style="font-size: 19px;">light_mode</span>
+</button>
+<!-- User Avatar -->
+<div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center text-label-sm font-label-sm font-semibold tracking-wide ring-2 ring-white dark:ring-slate-800">
+          CV
+        </div>
+</div>
+</header>
+<!-- Main Workspace Canvas -->
+<main class="flex-1 p-8 max-w-[1580px] w-full mx-auto space-y-6">
+<!-- Top Title & Quick Actions Row -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div>
+<div class="flex items-center gap-3">
+<h1 class="text-headline-lg font-headline-lg text-on-surface dark:text-inverse-on-surface">Performance overview</h1>
+<span class="px-2 py-0.5 rounded text-[11px] font-code-mono font-medium bg-surface-container-high dark:bg-slate-800 text-secondary dark:text-secondary-fixed-dim border border-outline-variant/30">SIMULATION MODE</span>
+</div>
+<p class="text-body-md font-body-md text-secondary dark:text-secondary-fixed-dim mt-1">Understand how your wallet API behaves under load and failure.</p>
+</div>
+<div class="flex items-center gap-3 self-start md:self-auto">
+<div class="flex items-center gap-1.5 text-secondary dark:text-secondary-fixed-dim text-body-sm font-body-sm">
+<span class="material-symbols-outlined text-outline" data-icon="calendar_today" style="font-size: 16px;">calendar_today</span>
+<span>Last updated <span class="font-medium text-on-surface dark:text-inverse-on-surface">Oct 26, 2025 10:24 AM</span></span>
+</div>
+<button class="h-9 px-4 rounded-lg bg-primary-container hover:bg-primary text-white font-label-md text-label-md flex items-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="play_arrow" data-weight="fill" style="font-size: 18px;">play_arrow</span>
+<span>Run a test</span>
+</button>
+</div>
+</div>
+<!-- 4 KPI Summary Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+<!-- Card 1: Average Latency -->
+<div class="bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant/40 dark:border-slate-800 rounded-xl p-5 custom-shadow transition-colors">
+<div class="flex items-center justify-between text-secondary dark:text-secondary-fixed-dim mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="bolt" style="font-size: 18px;">bolt</span>
+<span class="text-label-md font-label-md">Average latency</span>
+</div>
+<span class="material-symbols-outlined text-outline hover:text-on-surface cursor-help" data-icon="info" style="font-size: 16px;">info</span>
+</div>
+<div class="flex items-baseline justify-between">
+<div class="flex items-baseline gap-1.5">
+<span class="text-metric-stat font-metric-stat text-on-surface dark:text-inverse-on-surface">205</span>
+<span class="text-headline-sm font-headline-sm text-secondary dark:text-secondary-fixed-dim">ms</span>
+</div>
+<!-- Sparkline (Blue) -->
+<svg class="w-20 h-7 overflow-visible" fill="none" viewbox="0 0 80 28">
+<path d="M2 18 C15 18, 20 12, 35 15 C48 18, 55 5, 78 4" stroke="#2563eb" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 18 C15 18, 20 12, 35 15 C48 18, 55 5, 78 4 L78 28 L2 28 Z" fill="url(#latencyGrad)" opacity="0.15"></path>
+<defs>
+<lineargradient id="latencyGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#2563eb"></stop>
+<stop offset="100%" stop-color="#2563eb" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="flex items-center gap-1.5 mt-3 text-body-sm font-body-sm">
+<span class="text-emerald-600 dark:text-emerald-400 font-medium flex items-center">
+<span class="material-symbols-outlined" data-icon="arrow_downward" style="font-size: 14px;">arrow_downward</span>
+              -18%
+            </span>
+<span class="text-secondary dark:text-secondary-fixed-dim text-[12px]">vs. previous run</span>
+</div>
+</div>
+<!-- Card 2: Requests Processed -->
+<div class="bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant/40 dark:border-slate-800 rounded-xl p-5 custom-shadow transition-colors">
+<div class="flex items-center justify-between text-secondary dark:text-secondary-fixed-dim mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="database" style="font-size: 18px;">database</span>
+<span class="text-label-md font-label-md">Requests processed</span>
+</div>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="text-metric-stat font-metric-stat text-on-surface dark:text-inverse-on-surface">4,336</span>
+<!-- Sparkline (Green) -->
+<svg class="w-20 h-7 overflow-visible" fill="none" viewbox="0 0 80 28">
+<path d="M2 24 C20 22, 35 24, 45 16 C55 10, 68 12, 78 4" stroke="#10b981" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex items-center gap-1.5 mt-3 text-body-sm font-body-sm">
+<span class="text-emerald-600 dark:text-emerald-400 font-medium flex items-center">
+<span class="material-symbols-outlined" data-icon="arrow_upward" style="font-size: 14px;">arrow_upward</span>
+              +12%
+            </span>
+<span class="text-secondary dark:text-secondary-fixed-dim text-[12px]">vs. previous run</span>
+</div>
+</div>
+<!-- Card 3: Error Rate -->
+<div class="bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant/40 dark:border-slate-800 rounded-xl p-5 custom-shadow transition-colors">
+<div class="flex items-center justify-between text-secondary dark:text-secondary-fixed-dim mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500" data-icon="warning" style="font-size: 18px;">warning</span>
+<span class="text-label-md font-label-md">Error rate</span>
+</div>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="text-metric-stat font-metric-stat text-on-surface dark:text-inverse-on-surface">0.12%</span>
+<!-- Sparkline (Red wave) -->
+<svg class="w-20 h-7 overflow-visible" fill="none" viewbox="0 0 80 28">
+<path d="M2 18 C12 18, 18 14, 25 20 C35 24, 45 16, 55 18 C65 20, 70 12, 78 12" stroke="#ef4444" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex items-center gap-1.5 mt-3 text-body-sm font-body-sm">
+<span class="text-emerald-600 dark:text-emerald-400 font-medium flex items-center">
+<span class="material-symbols-outlined" data-icon="arrow_downward" style="font-size: 14px;">arrow_downward</span>
+              -0.8%
+            </span>
+<span class="text-secondary dark:text-secondary-fixed-dim text-[12px]">vs. previous run</span>
+</div>
+</div>
+<!-- Card 4: Availability -->
+<div class="bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant/40 dark:border-slate-800 rounded-xl p-5 custom-shadow transition-colors">
+<div class="flex items-center justify-between text-secondary dark:text-secondary-fixed-dim mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400" data-icon="shield" style="font-size: 18px;">shield</span>
+<span class="text-label-md font-label-md">Availability</span>
+</div>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="text-metric-stat font-metric-stat text-on-surface dark:text-inverse-on-surface">99.9%</span>
+<!-- Sparkline (Green) -->
+<svg class="w-20 h-7 overflow-visible" fill="none" viewbox="0 0 80 28">
+<path d="M2 18 C20 18, 35 15, 48 17 C60 18, 68 8, 78 6" stroke="#10b981" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex items-center gap-1.5 mt-3 text-body-sm font-body-sm">
+<span class="text-emerald-600 dark:text-emerald-400 font-medium flex items-center">
+<span class="material-symbols-outlined" data-icon="arrow_upward" style="font-size: 14px;">arrow_upward</span>
+              +0.1%
+            </span>
+<span class="text-secondary dark:text-secondary-fixed-dim text-[12px]">vs. previous run</span>
+</div>
+</div>
+</div>
+<!-- Dual Column Middle Section: Latency Chart + Infrastructure Health -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left 8 Cols: Latency & Throughput Area Chart -->
+<div class="lg:col-span-8 bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant/40 dark:border-slate-800 rounded-xl p-6 custom-shadow flex flex-col justify-between transition-colors">
+<!-- Chart Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-primary-container dark:text-primary-fixed mt-0.5">
+<span class="material-symbols-outlined" data-icon="bar_chart" style="font-size: 20px;">bar_chart</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface dark:text-inverse-on-surface">Latency &amp; throughput</h2>
+<p class="text-body-sm font-body-sm text-secondary dark:text-secondary-fixed-dim">Real-time metrics from the latest test run.</p>
+</div>
+</div>
+<!-- Segmented Time Filter & Legends -->
+<div class="flex flex-wrap items-center gap-4">
+<!-- Legend dots -->
+<div class="flex items-center gap-3 text-[12px] font-medium text-secondary dark:text-secondary-fixed-dim">
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                  Latency (ms)
+                </span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  Throughput (RPS)
+                </span>
+</div>
+<!-- Time pills -->
+<div class="bg-surface-container dark:bg-slate-800 p-0.5 rounded-lg flex items-center text-label-sm font-label-sm">
+<button class="px-2.5 py-1 text-secondary dark:text-secondary-fixed-dim hover:text-on-surface rounded">5m</button>
+<button class="px-2.5 py-1 text-secondary dark:text-secondary-fixed-dim hover:text-on-surface rounded">15m</button>
+<button class="px-2.5 py-1 bg-surface-container-lowest dark:bg-slate-700 text-on-surface dark:text-inverse-on-surface rounded shadow-sm font-semibold">30m</button>
+<button class="px-2.5 py-1 text-secondary dark:text-secondary-fixed-dim hover:text-on-surface rounded">1h</button>
+</div>
+</div>
+</div>
+<!-- Dual Axis SVG Chart Area -->
+<div class="relative w-full h-[270px] mt-2">
+<!-- Left Y-Axis (Latency) -->
+<div class="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-right text-[11px] font-code-mono text-outline">
+<span>500</span>
+<span>400</span>
+<span>300</span>
+<span>200</span>
+<span>100</span>
+<span>0</span>
+</div>
+<!-- Left Y-Axis Label -->
+<span class="absolute -left-7 top-1/2 -rotate-90 text-[10px] uppercase font-semibold text-outline tracking-wider -translate-y-1/2 hidden md:block">Latency (ms)</span>
+<!-- Right Y-Axis (Throughput) -->
+<div class="absolute right-0 top-0 bottom-6 w-8 flex flex-col justify-between text-left text-[11px] font-code-mono text-outline">
+<span>250</span>
+<span>200</span>
+<span>150</span>
+<span>100</span>
+<span>50</span>
+<span>0</span>
+</div>
+<!-- Right Y-Axis Label -->
+<span class="absolute -right-8 top-1/2 rotate-90 text-[10px] uppercase font-semibold text-outline tracking-wider -translate-y-1/2 hidden md:block">Throughput (RPS)</span>
+<!-- Chart Canvas / Grid & Lines -->
+<div class="absolute left-10 right-10 top-0 bottom-6">
+<!-- Horizontal Grid Lines -->
+<div class="w-full h-full flex flex-col justify-between border-b border-outline-variant/30 dark:border-slate-800">
+<div class="w-full border-b border-outline-variant/20 dark:border-slate-800/80"></div>
+<div class="w-full border-b border-outline-variant/20 dark:border-slate-800/80"></div>
+<div class="w-full border-b border-outline-variant/20 dark:border-slate-800/80"></div>
+<div class="w-full border-b border-outline-variant/20 dark:border-slate-800/80"></div>
+<div class="w-full border-b border-outline-variant/20 dark:border-slate-800/80"></div>
+</div>
+<!-- SVG Area & Lines -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 600 220">
+<defs>
+<!-- Soft Blue Gradient for Latency Area -->
+<lineargradient id="areaLatencyGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#2563eb" stop-opacity="0.25"></stop>
+<stop offset="85%" stop-color="#2563eb" stop-opacity="0.02"></stop>
+<stop offset="100%" stop-color="#2563eb" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Latency Area Fill -->
+<path d="M 0 170
+                         C 35 155, 60 162, 95 168
+                         C 130 172, 160 150, 195 145
+                         C 230 140, 260 120, 295 115
+                         C 330 110, 360 70, 395 65
+                         C 430 62, 455 125, 490 140
+                         C 525 152, 560 165, 600 170
+                         L 600 220 L 0 220 Z" fill="url(#areaLatencyGrad)"></path>
+<!-- Latency Line (Blue) -->
+<path d="M 0 170
+                         C 35 155, 60 162, 95 168
+                         C 130 172, 160 150, 195 145
+                         C 230 140, 260 120, 295 115
+                         C 330 110, 360 70, 395 65
+                         C 430 62, 455 125, 490 140
+                         C 525 152, 560 165, 600 170" fill="none" stroke="#2563eb" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Throughput Line (Emerald Green) -->
+<path d="M 0 145
+                         C 40 110, 75 122, 115 130
+                         C 155 135, 185 105, 220 102
+                         C 260 98, 280 90, 320 85
+                         C 350 80, 375 42, 410 40
+                         C 445 42, 475 75, 510 88
+                         C 545 100, 570 95, 600 85" fill="none" stroke="#10b981" stroke-linecap="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<!-- X-Axis Timeline Labels -->
+<div class="absolute left-10 right-10 bottom-0 flex justify-between text-[11px] font-code-mono text-outline">
+<span>10:00</span>
+<span>10:05</span>
+<span>10:10</span>
+<span>10:15</span>
+<span>10:20</span>
+<span>10:25</span>
+<span>10:30</span>
+</div>
+</div>
+</div>
+<!-- Right 4 Cols: Infrastructure Health -->
+<div class="lg:col-span-4 bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant/40 dark:border-slate-800 rounded-xl p-6 custom-shadow flex flex-col justify-between transition-colors">
+<div>
+<!-- Header -->
+<div class="flex items-start gap-3 pb-4">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-primary-container dark:text-primary-fixed mt-0.5">
+<span class="material-symbols-outlined" data-icon="dns" style="font-size: 20px;">dns</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface dark:text-inverse-on-surface">Infrastructure health</h2>
+<p class="text-body-sm font-body-sm text-secondary dark:text-secondary-fixed-dim">Status of Docker services in the lab environment.</p>
+</div>
+</div>
+<!-- Service Rows List -->
+<div class="divide-y divide-outline-variant/20 dark:divide-slate-800">
+<!-- Item 1: API FinFTech -->
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-secondary dark:text-secondary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="code" style="font-size: 18px;">code</span>
+</div>
+<div>
+<div class="text-body-sm font-label-md font-semibold text-on-surface dark:text-inverse-on-surface">API FinFTech</div>
+<div class="text-[12px] font-code-mono text-outline">finftech-api</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold border border-emerald-200/50 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Healthy
+                  </span>
+<div class="text-right text-[11px] font-code-mono">
+<div class="text-secondary dark:text-secondary-fixed-dim">CPU <span class="font-semibold text-on-surface dark:text-inverse-on-surface">12%</span></div>
+<div class="text-outline">Mem 256 MB</div>
+</div>
+</div>
+</div>
+<!-- Item 2: Database -->
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-secondary dark:text-secondary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="database" style="font-size: 18px;">database</span>
+</div>
+<div>
+<div class="text-body-sm font-label-md font-semibold text-on-surface dark:text-inverse-on-surface">Database</div>
+<div class="text-[12px] font-code-mono text-outline">finftech-db</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold border border-emerald-200/50 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Healthy
+                  </span>
+<div class="text-right text-[11px] font-code-mono">
+<div class="text-secondary dark:text-secondary-fixed-dim">CPU <span class="font-semibold text-on-surface dark:text-inverse-on-surface">8%</span></div>
+<div class="text-outline">Mem 128 MB</div>
+</div>
+</div>
+</div>
+<!-- Item 3: Toxiproxy -->
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-secondary dark:text-secondary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="hub" style="font-size: 18px;">hub</span>
+</div>
+<div>
+<div class="text-body-sm font-label-md font-semibold text-on-surface dark:text-inverse-on-surface">Toxiproxy</div>
+<div class="text-[12px] font-code-mono text-outline">toxiproxy</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold border border-emerald-200/50 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Healthy
+                  </span>
+<div class="text-right text-[11px] font-code-mono">
+<div class="text-secondary dark:text-secondary-fixed-dim">CPU <span class="font-semibold text-on-surface dark:text-inverse-on-surface">5%</span></div>
+<div class="text-outline">Mem 64 MB</div>
+</div>
+</div>
+</div>
+<!-- Item 4: k6 Runner -->
+<div class="py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-secondary dark:text-secondary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="equalizer" style="font-size: 18px;">equalizer</span>
+</div>
+<div>
+<div class="text-body-sm font-label-md font-semibold text-on-surface dark:text-inverse-on-surface">k6 Runner</div>
+<div class="text-[12px] font-code-mono text-outline">k6</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold border border-emerald-200/50 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Healthy
+                  </span>
+<div class="text-right text-[11px] font-code-mono">
+<div class="text-secondary dark:text-secondary-fixed-dim">CPU <span class="font-semibold text-on-surface dark:text-inverse-on-surface">3%</span></div>
+<div class="text-outline">Mem 48 MB</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Full-Width Table: Recent Test Runs -->
+<div class="bg-surface-container-lowest dark:bg-slate-900 border border-outline-variant/40 dark:border-slate-800 rounded-xl custom-shadow overflow-hidden transition-colors">
+<!-- Table Card Header -->
+<div class="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-outline-variant/30 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container dark:bg-slate-800 flex items-center justify-center text-primary-container dark:text-primary-fixed">
+<span class="material-symbols-outlined" data-icon="history" style="font-size: 20px;">history</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface dark:text-inverse-on-surface">Recent test runs</h2>
+<p class="text-body-sm font-body-sm text-secondary dark:text-secondary-fixed-dim">Latest executed tests and their results.</p>
+</div>
+</div>
+<button class="h-8 px-3 rounded-lg border border-outline-variant/50 dark:border-slate-700 bg-surface-container-lowest dark:bg-slate-800 text-primary-container dark:text-blue-400 font-label-sm text-label-sm flex items-center gap-1.5 hover:bg-surface-container dark:hover:bg-slate-700 self-start sm:self-auto transition-colors">
+<span>View all runs</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward" style="font-size: 15px;">arrow_forward</span>
+</button>
+</div>
+<!-- Responsive Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface dark:bg-slate-800/60 border-b border-outline-variant/30 dark:border-slate-800 text-label-sm font-label-sm text-secondary dark:text-secondary-fixed-dim">
+<th class="py-3 px-6 font-semibold">#</th>
+<th class="py-3 px-6 font-semibold">Scenario</th>
+<th class="py-3 px-6 font-semibold">Date</th>
+<th class="py-3 px-6 font-semibold">Duration</th>
+<th class="py-3 px-6 font-semibold">Users (VUs)</th>
+<th class="py-3 px-6 font-semibold">Requests</th>
+<th class="py-3 px-6 font-semibold">Result</th>
+<th class="py-3 px-6 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 dark:divide-slate-800 text-body-sm font-body-sm">
+<!-- Row 1: FT-104 -->
+<tr class="hover:bg-surface/80 dark:hover:bg-slate-800/40 transition-colors">
+<td class="py-3.5 px-6 font-code-mono font-semibold text-primary-container dark:text-blue-400">
+<a class="hover:underline" href="#">FT-104</a>
+</td>
+<td class="py-3.5 px-6">
+<div class="font-semibold text-on-surface dark:text-inverse-on-surface">Normal load</div>
+<div class="text-[12px] text-outline">Baseline performance</div>
+</td>
+<td class="py-3.5 px-6 text-secondary dark:text-secondary-fixed-dim">Oct 26, 2025 10:24 AM</td>
+<td class="py-3.5 px-6 font-code-mono text-secondary dark:text-secondary-fixed-dim">5 min</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">100</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">4,336</td>
+<td class="py-3.5 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[12px] font-medium border border-emerald-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Successful
+                  </span>
+</td>
+<td class="py-3.5 px-6 text-right">
+<a class="inline-flex items-center gap-1 text-primary-container dark:text-blue-400 hover:underline font-label-sm text-label-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="description" style="font-size: 15px;">description</span>
+<span>View report</span>
+</a>
+</td>
+</tr>
+<!-- Row 2: FT-103 -->
+<tr class="hover:bg-surface/80 dark:hover:bg-slate-800/40 transition-colors">
+<td class="py-3.5 px-6 font-code-mono font-semibold text-primary-container dark:text-blue-400">
+<a class="hover:underline" href="#">FT-103</a>
+</td>
+<td class="py-3.5 px-6">
+<div class="font-semibold text-on-surface dark:text-inverse-on-surface">High concurrency</div>
+<div class="text-[12px] text-outline">Stress test</div>
+</td>
+<td class="py-3.5 px-6 text-secondary dark:text-secondary-fixed-dim">Oct 26, 2025 09:58 AM</td>
+<td class="py-3.5 px-6 font-code-mono text-secondary dark:text-secondary-fixed-dim">10 min</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">200</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">8,912</td>
+<td class="py-3.5 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[12px] font-medium border border-emerald-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Successful
+                  </span>
+</td>
+<td class="py-3.5 px-6 text-right">
+<a class="inline-flex items-center gap-1 text-primary-container dark:text-blue-400 hover:underline font-label-sm text-label-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="description" style="font-size: 15px;">description</span>
+<span>View report</span>
+</a>
+</td>
+</tr>
+<!-- Row 3: FT-102 -->
+<tr class="hover:bg-surface/80 dark:hover:bg-slate-800/40 transition-colors">
+<td class="py-3.5 px-6 font-code-mono font-semibold text-primary-container dark:text-blue-400">
+<a class="hover:underline" href="#">FT-102</a>
+</td>
+<td class="py-3.5 px-6">
+<div class="font-semibold text-on-surface dark:text-inverse-on-surface">Network latency</div>
+<div class="text-[12px] text-outline">400 ms latency</div>
+</td>
+<td class="py-3.5 px-6 text-secondary dark:text-secondary-fixed-dim">Oct 26, 2025 09:32 AM</td>
+<td class="py-3.5 px-6 font-code-mono text-secondary dark:text-secondary-fixed-dim">10 min</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">200</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">1,766</td>
+<td class="py-3.5 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 text-[12px] font-medium border border-amber-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    Degraded
+                  </span>
+</td>
+<td class="py-3.5 px-6 text-right">
+<a class="inline-flex items-center gap-1 text-primary-container dark:text-blue-400 hover:underline font-label-sm text-label-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="description" style="font-size: 15px;">description</span>
+<span>View report</span>
+</a>
+</td>
+</tr>
+<!-- Row 4: FT-101 -->
+<tr class="hover:bg-surface/80 dark:hover:bg-slate-800/40 transition-colors">
+<td class="py-3.5 px-6 font-code-mono font-semibold text-primary-container dark:text-blue-400">
+<a class="hover:underline" href="#">FT-101</a>
+</td>
+<td class="py-3.5 px-6">
+<div class="font-semibold text-on-surface dark:text-inverse-on-surface">Network interruption</div>
+<div class="text-[12px] text-outline">Connection cut</div>
+</td>
+<td class="py-3.5 px-6 text-secondary dark:text-secondary-fixed-dim">Oct 26, 2025 09:05 AM</td>
+<td class="py-3.5 px-6 font-code-mono text-secondary dark:text-secondary-fixed-dim">5 min</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">100</td>
+<td class="py-3.5 px-6 font-code-mono text-on-surface dark:text-inverse-on-surface">0</td>
+<td class="py-3.5 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-400 text-[12px] font-medium border border-red-200/50">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    Failed
+                  </span>
+</td>
+<td class="py-3.5 px-6 text-right">
+<a class="inline-flex items-center gap-1 text-primary-container dark:text-blue-400 hover:underline font-label-sm text-label-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="description" style="font-size: 15px;">description</span>
+<span>View report</span>
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+<script>
+    // Theme Switch Interactive Logic
+    const toggleBtn = document.getElementById('theme-toggle');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+      });
+    }
+  </script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages.js"></script>
+  <script src="assets/js/app.js"></script>
+</body></html>

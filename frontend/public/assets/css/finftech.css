@@ -1,0 +1,12 @@
+/* FinFTech - ajustes mÃƒÂ­nimos sobre el diseÃƒÂ±o de Stitch (no alteran la identidad visual) */
+.custom-shadow {
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+}
+#ff-detail-backdrop {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+}
+@keyframes ff-spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin { animation: ff-spin 1s linear infinite; }
