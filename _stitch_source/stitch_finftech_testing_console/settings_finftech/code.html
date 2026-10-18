@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings &amp; Lab Configuration | FinFTech Load &amp; Resilience Lab</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#eaf1ff",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-low": "#eff4ff",
+            "outline": "#737686",
+            "surface-tint": "#0053db",
+            "on-error-container": "#93000a",
+            "primary-container": "#2563eb",
+            "on-primary-fixed": "#00174b",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#007d55",
+            "secondary": "#565e74",
+            "primary-fixed-dim": "#b4c5ff",
+            "on-tertiary-fixed-variant": "#005236",
+            "surface-container-highest": "#d3e4fe",
+            "surface-variant": "#d3e4fe",
+            "on-tertiary-fixed": "#002113",
+            "surface-container": "#e5eeff",
+            "on-surface-variant": "#434655",
+            "on-tertiary-container": "#bdffdb",
+            "background": "#f8f9ff",
+            "secondary-fixed": "#dae2fd",
+            "on-surface": "#0b1c30",
+            "on-secondary-container": "#5c647a",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#dae2fd",
+            "secondary-fixed-dim": "#bec6e0",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-primary-fixed-variant": "#003ea8",
+            "on-tertiary": "#ffffff",
+            "on-background": "#0b1c30",
+            "error": "#ba1a1a",
+            "outline-variant": "#c3c6d7",
+            "inverse-primary": "#b4c5ff",
+            "surface": "#f8f9ff",
+            "tertiary-fixed-dim": "#4edea3",
+            "surface-bright": "#f8f9ff",
+            "on-error": "#ffffff",
+            "surface-dim": "#cbdbf5",
+            "tertiary": "#006242",
+            "inverse-surface": "#213145",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#131b2e",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "tertiary-fixed": "#6ffbbe",
+            "primary": "#004ac6",
+            "on-primary-container": "#eeefff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1.25rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "code-mono": ["JetBrains Mono", "monospace"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "metric-stat": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "display": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"]
+          },
+          "fontSize": {
+            "code-mono": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "metric-stat": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-sm": ["15px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-shadow {
+      box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    }
+    .custom-slider {
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 9999px;
+      background: #e5eeff;
+      outline: none;
+    }
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #2563eb;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: all 0.15s ease-in-out;
+    }
+    .custom-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      background: #004ac6;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md antialiased h-full overflow-hidden flex">
+<!-- ================= SIDEBAR (From Shared Components JSON) ================= -->
+<!-- Exact attributes from JSON: fixed left-0 top-0 bottom-0 w-60 h-screen, border-r border-outline-variant/30 -->
+<aside class="fixed left-0 top-0 bottom-0 w-60 h-screen bg-surface dark:bg-inverse-surface border-r border-outline-variant/30 dark:border-outline/20 flex flex-col justify-between p-4 z-30">
+<!-- Top Brand & Nav Cluster -->
+<div>
+<!-- Header Brand -->
+<div class="flex items-center gap-3 px-2 py-2 mb-6">
+<div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="shield_lock">shield_lock</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface tracking-tight">FinFTech</span>
+<span class="font-body-sm text-body-sm text-secondary">Load &amp; Resilience Lab</span>
+</div>
+</div>
+<!-- Navigation links (Settings tab active as determined by context) -->
+<nav class="space-y-1">
+<!-- Tab 1: Overview -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md transition-colors hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<!-- Tab 2: Test Lab -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md transition-colors hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="science">science</span>
+<span>Test Lab</span>
+</a>
+<!-- Tab 3: Live Runs -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md transition-colors hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="monitoring">monitoring</span>
+<span>Live Runs</span>
+</a>
+<!-- Tab 4: History & Reports -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface font-label-md text-label-md transition-colors hover:bg-surface-container/60 dark:hover:bg-surface-container-high/60" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+<span>History &amp; Reports</span>
+</a>
+<!-- Tab 5: Settings (ACTIVE - mapped with style_active_navigation) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-container dark:bg-surface-container-high text-primary dark:text-primary-fixed font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-semibold">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Environment Card Footer (From JSON) -->
+<div class="border border-outline-variant/30 rounded-xl p-3 bg-surface-container-lowest/60 backdrop-blur-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span>
+</span>
+<span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider">Engine Healthy</span>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5" data-icon="deployed_code">deployed_code</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-medium leading-tight">Docker Lab - All services running</p>
+<p class="font-code-mono text-code-mono text-secondary mt-1">v24.0.7-rootless</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- ================= MAIN WRAPPER ================= -->
+<div class="pl-60 flex-1 flex flex-col h-screen overflow-hidden bg-background">
+<!-- TopNavBar (From Shared Components JSON) -->
+<header class="h-14 w-full bg-surface dark:bg-inverse-surface border-b border-outline-variant/30 dark:border-outline/20 flex items-center justify-between px-8 z-20 flex-shrink-0">
+<!-- Breadcrumb Hierarchy -->
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-secondary">Settings</span>
+<span class="material-symbols-outlined text-[16px] text-outline-variant" data-icon="chevron_right">chevron_right</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface dark:text-inverse-on-surface">General &amp; Lab Configuration</span>
+</div>
+<!-- Right Action Cluster -->
+<div class="flex items-center gap-3">
+<!-- Environment Selector Dropdown -->
+<div class="relative flex items-center">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface-container-lowest hover:bg-surface-container/40 transition-colors text-on-surface font-label-md text-label-md" type="button">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Docker Lab</span>
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+<!-- API Operational Health Chip -->
+<div class="h-6 px-2.5 rounded-full bg-surface-container-lowest border border-outline-variant/30 flex items-center gap-1.5 text-tertiary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>API operational</span>
+</div>
+<div class="h-4 w-px bg-outline-variant/40 mx-1"></div>
+<!-- Notifications Action -->
+<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors relative" title="Notifications" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<!-- Dark Mode Toggle -->
+<button class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 transition-colors" title="Toggle theme" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="dark_mode">dark_mode</span>
+</button>
+<!-- User Avatar -->
+<div class="flex items-center gap-2 pl-2">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold flex items-center justify-center">
+            CV
+          </div>
+</div>
+</div>
+</header>
+<!-- Content Workspace -->
+<main class="flex-1 overflow-y-auto px-8 py-6 max-w-[1440px] w-full mx-auto pb-24">
+<!-- Page Title & Subtitle Banner -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Settings &amp; Lab Configuration</h1>
+<p class="font-body-md text-body-md text-secondary mt-1">Manage environments, Toxiproxy failure rules, SLA thresholds, and API secrets.</p>
+</div>
+<div class="flex items-center gap-2 text-secondary font-code-mono text-code-mono bg-surface-container-lowest border border-outline-variant/30 px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="sync">sync</span>
+<span>Config Revision: r894-live</span>
+</div>
+</div>
+<!-- Internal Navigation Secondary Tabs -->
+<div class="border-b border-outline-variant/30 mb-8 flex space-x-6">
+<button class="pb-3 border-b-2 border-primary text-primary font-label-md text-label-md font-semibold flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="tune">tune</span>
+<span>General &amp; Lab</span>
+</button>
+<button class="pb-3 border-b-2 border-transparent text-secondary hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="view_in_ar">view_in_ar</span>
+<span>Environments &amp; Docker</span>
+</button>
+<button class="pb-3 border-b-2 border-transparent text-secondary hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="speed">speed</span>
+<span>SLA Thresholds</span>
+</button>
+<button class="pb-3 border-b-2 border-transparent text-secondary hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="bolt">bolt</span>
+<span>Chaos Toxiproxy Mesh</span>
+</button>
+<button class="pb-3 border-b-2 border-transparent text-secondary hover:text-on-surface font-label-md text-label-md transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="webhook">webhook</span>
+<span>Integrations &amp; Alerts</span>
+</button>
+</div>
+<!-- Settings Layout Bento / Multi-section Grid -->
+<div class="space-y-6">
+<!-- Section 1: Cluster & Docker Environment -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-6 custom-shadow">
+<div class="flex items-center gap-3 pb-4 mb-5 border-b border-outline-variant/20">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="deployed_code">deployed_code</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Cluster &amp; Docker Environment</h2>
+<p class="font-body-sm text-body-sm text-secondary">Designate execution runtime endpoints and concurrent virtual user capacities.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Active Environment -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="active-env">Active Environment</label>
+<div class="relative">
+<select class="w-full h-10 px-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-on-surface font-body-md text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none appearance-none cursor-pointer" id="active-env">
+<option selected="">Docker Lab Local</option>
+<option>Staging Chaos Cluster</option>
+<option>Prod-like Shadow</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-secondary pointer-events-none text-[20px]" data-icon="unfold_more">unfold_more</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5">Locally isolated daemon instances via FinFTech container harness.</p>
+</div>
+<!-- Docker Daemon Socket Path -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="daemon-socket">Docker daemon socket path</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-[18px]" data-icon="terminal">terminal</span>
+<input class="w-full h-10 pl-9 pr-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-on-surface font-code-mono text-code-mono focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" id="daemon-socket" type="text" value="/var/run/docker.sock"/>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5">Unix socket path for daemon lifecycle hooks and container telemetry.</p>
+</div>
+<!-- Runner Concurrency Limit -->
+<div class="md:col-span-2 pt-2">
+<div class="flex items-center justify-between mb-2">
+<label class="font-label-md text-label-md text-on-surface" for="vu-range">Runner concurrency limit</label>
+<div class="flex items-center gap-1.5 bg-surface-container px-2.5 py-1 rounded-md">
+<span class="font-code-mono text-code-mono font-bold text-primary" id="vu-val">6,500</span>
+<span class="font-code-mono text-code-mono text-secondary">/ 10,000 VUs</span>
+</div>
+</div>
+<input class="w-full custom-slider" id="vu-range" max="10000" min="500" oninput="document.getElementById('vu-val').innerText = Number(this.value).toLocaleString()" step="250" type="range" value="6500"/>
+<div class="flex justify-between font-label-sm text-label-sm text-secondary mt-2">
+<span>500 VUs (Light load)</span>
+<span>5,000 VUs</span>
+<span>Max 10,000 VUs (Aggressive soak)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: SLA & Failure Guardrails -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-6 custom-shadow">
+<div class="flex items-center gap-3 pb-4 mb-5 border-b border-outline-variant/20">
+<div class="w-8 h-8 rounded-lg bg-error-container/40 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[20px]" data-icon="security_update_warning">security_update_warning</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">SLA &amp; Failure Guardrails</h2>
+<p class="font-body-sm text-body-sm text-secondary">Define automated tripwires that immediately abort active drills when system resilience collapses.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Max Tolerated P99 Latency -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="p99-latency">Max Tolerated P99 Latency</label>
+<div class="relative">
+<input class="w-full h-10 px-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-on-surface font-body-md text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" id="p99-latency" type="text" value="1,000 ms"/>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-secondary text-[18px]" data-icon="timer">timer</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5">Breach triggers automatic drill abort to protect shared memory nodes.</p>
+</div>
+<!-- Max Tolerated Error Rate -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="error-rate">Max Tolerated Error Rate</label>
+<div class="relative">
+<input class="w-full h-10 px-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-on-surface font-body-md text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" id="error-rate" type="text" value="5.0%"/>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-secondary text-[18px]" data-icon="percent">percent</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5">SLA breach threshold before marking test run as fatal failure.</p>
+</div>
+<!-- Emergency Circuit Breaker Toggle -->
+<div class="md:col-span-2 bg-surface-container-low/60 border border-outline-variant/30 rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[22px] mt-0.5" data-icon="bolt">bolt</span>
+<div>
+<span class="font-headline-sm text-headline-sm text-on-surface block">Emergency Circuit Breaker</span>
+<span class="font-body-sm text-body-sm text-secondary">Auto-abort drill on unhandled 5xx flood over a sustained 10-second sliding window.</span>
+</div>
+</div>
+<!-- Toggle switch (ON) -->
+<label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant/40 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Section 3: Target API & Auth Context -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-6 custom-shadow">
+<div class="flex items-center gap-3 pb-4 mb-5 border-b border-outline-variant/20">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="key">key</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Target API &amp; Auth Context</h2>
+<p class="font-body-sm text-body-sm text-secondary">Define destination hosts and authentication secrets propagated to synthetic worker pods.</p>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Default Target Base URL -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="target-url">Default Target Base URL</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-[18px]" data-icon="link">link</span>
+<input class="w-full h-10 pl-9 pr-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-on-surface font-code-mono text-code-mono focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" id="target-url" type="url" value="https://api.finftech.local"/>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5">Root endpoint applied to scenario runs unless overridden at execution time.</p>
+</div>
+<!-- Synthetic Bearer Token / API Key -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="auth-token">Synthetic Bearer Token / API Key</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]" data-icon="vpn_key">vpn_key</span>
+<input class="w-full h-10 pl-9 pr-10 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-on-surface font-code-mono text-code-mono focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" id="auth-token" type="password" value="fft_sec_live_99a8x00192847291aeb7c09"/>
+<button class="absolute right-3 text-secondary hover:text-on-surface transition-colors" onclick="const input = document.getElementById('auth-token'); const icon = document.getElementById('eye-icon'); if (input.type === 'password') { input.type = 'text'; icon.innerText = 'visibility_off'; } else { input.type = 'password'; icon.innerText = 'visibility'; }" title="Toggle visibility" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility" id="eye-icon">visibility</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5">Injected into HTTP Authorization headers across test harnesses automatically.</p>
+</div>
+</div>
+</div>
+<!-- Section 4: Notification & Alert Webhooks -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-6 custom-shadow">
+<div class="flex items-center gap-3 pb-4 mb-5 border-b border-outline-variant/20">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="campaign">campaign</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Notification &amp; Alert Webhooks</h2>
+<p class="font-body-sm text-body-sm text-secondary">Dispatch real-time resilience drill outcome summaries to external on-call channels.</p>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1.5" for="webhook-url">Slack / PagerDuty webhook URL</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-[18px]" data-icon="notifications_active">notifications_active</span>
+<input class="w-full h-10 pl-9 pr-24 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-on-surface font-code-mono text-code-mono focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" id="webhook-url" type="url" value=""/>
+<button class="absolute right-2 top-1.5 px-3 py-1 bg-surface-container text-primary hover:bg-surface-container-high rounded-md font-label-sm text-label-sm font-medium transition-colors" type="button">
+                Test Ping
+              </button>
+</div>
+<p class="font-body-sm text-body-sm text-secondary mt-1.5">Receives alerts on P99 SLA latency anomalies, 5xx threshold triggers, and chaos completion summaries.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar / Sticky Drawer -->
+<footer class="fixed bottom-0 right-0 left-60 h-16 bg-surface-container-lowest/90 backdrop-blur-md border-t border-outline-variant/30 px-8 flex items-center justify-between z-20">
+<div class="flex items-center gap-2 text-secondary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>All cluster validations passed. Settings ready to apply.</span>
+</div>
+<div class="flex items-center gap-3">
+<!-- Ghost Discard Button -->
+<button class="px-4 h-9 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors font-label-md text-label-md font-medium" type="button">
+          Discard Changes
+        </button>
+<!-- Primary Electric Blue Button -->
+<button class="px-5 h-9 rounded-lg bg-primary-container hover:bg-primary text-white font-label-md text-label-md font-medium shadow-sm hover:shadow transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="save">save</span>
+<span>Save Settings</span>
+</button>
+</div>
+</footer>
+</div>
+</body></html>

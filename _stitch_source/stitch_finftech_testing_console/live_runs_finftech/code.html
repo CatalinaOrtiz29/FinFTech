@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background text-on-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinFTech Load &amp; Resilience Lab - Live Runs</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#eaf1ff",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-low": "#eff4ff",
+            "outline": "#737686",
+            "surface-tint": "#0053db",
+            "on-error-container": "#93000a",
+            "primary-container": "#2563eb",
+            "on-primary-fixed": "#00174b",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#007d55",
+            "secondary": "#565e74",
+            "primary-fixed-dim": "#b4c5ff",
+            "on-tertiary-fixed-variant": "#005236",
+            "surface-container-highest": "#d3e4fe",
+            "surface-variant": "#d3e4fe",
+            "on-tertiary-fixed": "#002113",
+            "surface-container": "#e5eeff",
+            "on-surface-variant": "#434655",
+            "on-tertiary-container": "#bdffdb",
+            "background": "#f8f9ff",
+            "secondary-fixed": "#dae2fd",
+            "on-surface": "#0b1c30",
+            "on-secondary-container": "#5c647a",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#dae2fd",
+            "secondary-fixed-dim": "#bec6e0",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-primary-fixed-variant": "#003ea8",
+            "on-tertiary": "#ffffff",
+            "on-background": "#0b1c30",
+            "error": "#ba1a1a",
+            "outline-variant": "#c3c6d7",
+            "inverse-primary": "#b4c5ff",
+            "surface": "#f8f9ff",
+            "tertiary-fixed-dim": "#4edea3",
+            "surface-bright": "#f8f9ff",
+            "on-error": "#ffffff",
+            "surface-dim": "#cbdbf5",
+            "tertiary": "#006242",
+            "inverse-surface": "#213145",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#131b2e",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "tertiary-fixed": "#6ffbbe",
+            "primary": "#004ac6",
+            "on-primary-container": "#eeefff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1.25rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "code-mono": ["JetBrains Mono"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "metric-stat": ["Inter"],
+            "label-md": ["Inter"],
+            "display": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-sm": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-sm": ["Inter"]
+          },
+          "fontSize": {
+            "code-mono": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "metric-stat": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-sm": ["15px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-1 {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-background text-on-surface antialiased flex selection:bg-surface-container-highest">
+<!-- SIDEBAR (Fixed 240px / w-60) -->
+<aside class="fixed left-0 top-0 bottom-0 w-60 h-screen bg-surface border-r border-outline-variant/30 flex flex-col justify-between p-4 z-30">
+<div class="flex flex-col gap-6">
+<!-- Brand Header -->
+<div class="flex items-center gap-3 px-2 py-1.5">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-white flex items-center justify-center font-bold text-headline-sm shadow-sm">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</div>
+<div>
+<span class="block text-headline-sm font-headline-sm font-bold text-on-surface tracking-tight leading-none">FinFTech</span>
+<span class="block text-[11px] font-label-sm text-secondary tracking-normal mt-0.5">Load &amp; Resilience Lab</span>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex flex-col gap-1">
+<!-- Overview -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span>Overview</span>
+</a>
+<!-- Test Lab -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">science</span>
+<span>Test Lab</span>
+</a>
+<!-- Live Runs (ACTIVE TAB) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-container text-primary font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]">monitoring</span>
+<span class="font-semibold">Live Runs</span>
+<span class="ml-auto w-2 h-2 rounded-full bg-primary animate-pulse-subtle"></span>
+</a>
+<!-- History & Reports -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">description</span>
+<span>History &amp; Reports</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container/60 font-label-md text-label-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Bottom Card / Environment Status -->
+<div class="mt-auto">
+<div class="p-3 bg-surface-container-lowest border border-outline-variant/40 rounded-xl shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+<div class="flex items-center gap-2 mb-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">deployed_code</span>
+<span class="text-label-sm font-label-sm text-on-surface font-semibold">Docker Lab</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="text-[11px] font-body-sm text-secondary">All services running</span>
+</div>
+<div class="mt-2.5 pt-2 border-t border-outline-variant/20 flex items-center justify-between text-[11px] font-code-mono text-secondary">
+<span>v2.4.1-chaos</span>
+<span class="text-emerald-600 font-medium">Healthy</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- MAIN WRAPPER -->
+<div class="flex-1 flex flex-col pl-60 min-w-0">
+<!-- TOP NAVIGATION BAR -->
+<header class="sticky top-0 z-20 h-14 bg-surface border-b border-outline-variant/30 flex items-center justify-between px-8 w-full backdrop-blur-sm bg-surface/95">
+<!-- Left: Breadcrumb & Context -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 text-label-md font-label-md">
+<span class="text-secondary hover:text-on-surface cursor-pointer">Live Runs</span>
+<span class="text-outline-variant">/</span>
+<span class="font-code-mono text-label-sm font-semibold text-on-surface bg-surface-container-high/60 px-2 py-0.5 rounded text-primary">EXP-LAT-WALLET-P99</span>
+</div>
+<div class="h-4 w-px bg-outline-variant/40 mx-1"></div>
+<!-- Environment Selector Pill -->
+<button class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-label-sm font-label-sm bg-surface-container-low border border-outline-variant/30 text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[15px] text-secondary">database</span>
+<span>Docker Lab</span>
+<span class="material-symbols-outlined text-[14px] text-secondary">arrow_drop_down</span>
+</button>
+<!-- Live Status Pill -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-label-sm font-label-sm bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-subtle"></span>
+<span>Running (Ramp-up phase)</span>
+</span>
+</div>
+<!-- Right: Global Actions & User Profile -->
+<div class="flex items-center gap-3">
+<!-- API Operational status badge -->
+<div class="hidden xl:flex items-center gap-1.5 px-2 py-1 rounded text-label-sm font-label-sm text-secondary bg-surface-container/40">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>API operational</span>
+</div>
+<!-- Notifications -->
+<button aria-label="Notifications" class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary ring-2 ring-surface"></span>
+</button>
+<!-- Theme Toggle -->
+<button aria-label="Toggle theme" class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</button>
+<div class="h-4 w-px bg-outline-variant/40 mx-0.5"></div>
+<!-- Profile Avatar -->
+<div class="flex items-center gap-2 pl-1 cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center font-headline-sm text-label-sm font-semibold shadow-sm ring-1 ring-outline-variant/30">
+            CV
+          </div>
+<span class="material-symbols-outlined text-secondary text-[16px]">expand_more</span>
+</div>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="flex-1 p-8 max-w-[1600px] w-full mx-auto space-y-6">
+<!-- HEADER ROW: Experiment Title, Status, Drill Target, Action Buttons -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-outline-variant/20">
+<div>
+<div class="flex flex-wrap items-center gap-2.5 mb-1.5">
+<h1 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+              EXP-LAT-WALLET-P99: High Concurrency &amp; Latency Drill
+            </h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-label-sm font-label-sm bg-blue-50 text-blue-700 border border-blue-200">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse-subtle"></span>
+<span>Active Ã¢â‚¬Â¢ T+06:42 / 10:00</span>
+</span>
+</div>
+<div class="flex items-center gap-2 text-body-sm font-body-sm text-secondary">
+<span>Target Endpoint:</span>
+<code class="px-2 py-0.5 rounded bg-surface-container text-primary font-code-mono text-label-sm border border-outline-variant/30">
+              POST /v1/wallet/transfer
+            </code>
+<span class="text-outline-variant">Ã¢â‚¬Â¢</span>
+<span>Scenario: <strong class="text-on-surface font-medium">Tier-1 Multi-Region Liquidity Stress</strong></span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-2.5 shrink-0">
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+<span class="material-symbols-outlined text-[18px] text-secondary">pause_circle</span>
+<span>Pause Injection</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300 font-label-md text-label-md transition shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+<span class="material-symbols-outlined text-[18px] text-red-600">cancel</span>
+<span>Abort Drill</span>
+</button>
+</div>
+</div>
+<!-- PROGRESS AND VUs BANNER -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-3.5">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-headline-sm font-headline-sm text-on-surface">Execution Progression</span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-surface-container text-primary font-medium">Ramp-up Ã¢â€ â€™ Sustained phase</span>
+</div>
+<p class="text-body-sm font-body-sm text-secondary">Step 3 of 4: Sustained peak injection before automated cooling ramp.</p>
+</div>
+</div>
+<!-- Progress summary stats -->
+<div class="flex items-center gap-6 text-right">
+<div>
+<span class="block text-label-sm font-label-sm text-secondary">Active Virtual Users</span>
+<span class="text-headline-md font-headline-md font-bold text-on-surface">2,150 <span class="text-body-sm font-normal text-secondary">/ 2,500 target</span></span>
+</div>
+<div class="h-8 w-px bg-outline-variant/30"></div>
+<div>
+<span class="block text-label-sm font-label-sm text-secondary">Current Ingestion</span>
+<span class="text-headline-md font-headline-md font-bold text-primary font-code-mono">3,842 <span class="text-label-sm font-normal text-secondary">req/s</span></span>
+</div>
+</div>
+</div>
+<!-- Custom Step-Marked Progress Bar -->
+<div class="space-y-1.5">
+<div class="w-full bg-surface-container h-2.5 rounded-full overflow-hidden flex relative">
+<div class="bg-primary h-full transition-all duration-500 rounded-full" style="width: 67%;"></div>
+</div>
+<div class="flex justify-between text-[11px] font-label-sm text-secondary px-0.5">
+<span>T+00:00 (Warmup)</span>
+<span>T+03:00 (Ramp 1.5k VU)</span>
+<span class="font-semibold text-primary">T+06:42 (67% - Current)</span>
+<span>T+08:30 (Peak 2.5k VU)</span>
+<span>T+10:00 (Completion)</span>
+</div>
+</div>
+</div>
+<!-- 4 LIVE REAL-TIME TELEMETRY CARDS -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+<!-- Card 1: Throughput -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] hover:border-outline-variant transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-md font-label-md text-secondary font-medium">Current Throughput</span>
+<div class="w-7 h-7 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[17px]">speed</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-metric-stat font-metric-stat text-on-surface font-code-mono">3,842</span>
+<span class="text-body-sm font-body-sm text-secondary">req/s</span>
+</div>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-emerald-700">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="font-semibold">+14%</span>
+<span class="text-secondary font-normal">vs pre-drill baseline</span>
+</div>
+</div>
+<!-- Card 2: Latency P95 / P99 -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] hover:border-outline-variant transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-md font-label-md text-secondary font-medium">Latency P95 / P99</span>
+<div class="w-7 h-7 rounded-md bg-amber-50 text-amber-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[17px]">acute</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2 mb-2 font-code-mono">
+<span class="text-headline-md font-headline-md text-on-surface">420<span class="text-body-sm font-normal text-secondary">ms</span></span>
+<span class="text-outline-variant">/</span>
+<span class="text-metric-stat font-metric-stat text-amber-600">1,280<span class="text-body-sm font-normal text-secondary">ms</span></span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-amber-50 text-amber-800 border border-amber-200">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+<span>SLA Breached (&gt;1,000ms target)</span>
+</span>
+</div>
+</div>
+<!-- Card 3: Error Rate -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] hover:border-outline-variant transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-md font-label-md text-secondary font-medium">Error Rate</span>
+<div class="w-7 h-7 rounded-md bg-red-50 text-red-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[17px]">error_outline</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-metric-stat font-metric-stat text-red-600 font-code-mono">2.14%</span>
+<span class="text-body-sm font-body-sm text-secondary">(82 total)</span>
+</div>
+<div class="flex items-center gap-1 text-[11px] font-label-sm text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[13px]">warning</span>
+<span>504 Gateway Timeouts &amp; resets</span>
+</div>
+</div>
+<!-- Card 4: Active Chaos Faults -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] hover:border-outline-variant transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-md font-label-md text-secondary font-medium">Active Chaos Faults</span>
+<div class="w-7 h-7 rounded-md bg-primary-container text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[17px]">hub</span>
+</div>
+</div>
+<div class="mb-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-code-mono text-label-sm font-semibold text-on-surface">Toxiproxy Injector</span>
+</div>
+<p class="text-body-sm font-body-sm text-secondary mt-1 truncate">
+              +350ms delay on <code class="text-on-surface font-code-mono text-[11px]">mock-bank-gw</code>
+</p>
+</div>
+<div class="flex items-center gap-1 text-[11px] font-label-sm text-secondary bg-surface-container px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[13px] text-primary">schedule</span>
+<span>Active since T+05:00 (1m 42s elapsed)</span>
+</div>
+</div>
+</div>
+<!-- MAIN VISUAL SECTION (2 Columns: Wide Streaming Chart + Real-Time Event Log Terminal) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+<!-- LEFT (8 Columns): Dual Curve Real-Time Telemetry Stream Chart -->
+<div class="lg:col-span-7 xl:col-span-8 bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-5 shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]">
+<!-- Chart Header & Legend Controls -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-outline-variant/20 gap-3">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-headline-md font-headline-md text-on-surface">Live Telemetry Stream</h2>
+<span class="text-[11px] font-label-sm text-secondary">(Last 10 minutes)</span>
+</div>
+<p class="text-body-sm font-body-sm text-secondary">Correlating system throughput (req/s) against tail response latency.</p>
+</div>
+<!-- Legend and Segmented control -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 text-label-sm font-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+<span class="text-secondary">RPS (req/s)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+<span class="text-secondary">Latency P99 (ms)</span>
+</div>
+</div>
+<!-- Segmented Time Range -->
+<div class="inline-flex p-0.5 rounded-lg bg-surface-container text-label-sm font-label-sm">
+<button class="px-2 py-1 rounded-md text-secondary hover:text-on-surface">5m</button>
+<button class="px-2 py-1 rounded-md bg-white text-on-surface shadow-sm font-semibold">10m</button>
+<button class="px-2 py-1 rounded-md text-secondary hover:text-on-surface">30m</button>
+</div>
+</div>
+</div>
+<!-- SVG Telemetry Chart Area -->
+<div class="relative mt-4 w-full h-[320px] select-none">
+<!-- Horizontal Threshold Reference Line: SLA 1,000ms -->
+<div class="absolute inset-x-0 top-[35%] border-b border-dashed border-red-300 pointer-events-none z-10 flex justify-end">
+<span class="text-[10px] font-code-mono font-medium text-red-600 bg-red-50 px-1.5 py-0.5 rounded mr-2 -mt-2.5">
+                SLA THRESHOLD: 1,000ms
+              </span>
+</div>
+<!-- Vertical Chaos Injection Marker -->
+<div class="absolute top-0 bottom-6 left-[50%] border-l-2 border-dashed border-primary pointer-events-none z-10">
+<div class="bg-primary text-white text-[10px] font-code-mono font-semibold px-2 py-0.5 rounded-md shadow-sm -ml-16 mt-2 inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[11px]">bolt</span>
+<span>Chaos Injected @ T+05:00</span>
+</div>
+</div>
+<!-- Live Inspection Cursor @ T+06:42 (~67%) -->
+<div class="absolute top-0 bottom-6 left-[67%] border-l border-primary/60 pointer-events-none z-10">
+<div class="bg-surface-container-lowest border border-outline-variant/60 shadow-lg rounded-md p-2 -ml-24 mt-8 w-44 z-20 text-[11px] font-code-mono space-y-1">
+<div class="text-secondary font-label-sm border-b border-outline-variant/20 pb-0.5 mb-1">Cursor: T+06:42</div>
+<div class="flex justify-between items-center">
+<span class="text-emerald-700">RPS:</span>
+<span class="font-bold text-on-surface">3,842 req/s</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-amber-700">P99 Lat:</span>
+<span class="font-bold text-amber-600">1,280 ms</span>
+</div>
+</div>
+<div class="w-3 h-3 rounded-full bg-primary border-2 border-white shadow-sm -ml-1.5 top-[30%] absolute"></div>
+</div>
+<!-- Pure Responsive SVG Multi-Metric Curves -->
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 300">
+<!-- Grid background lines -->
+<line stroke="#f1f5f9" stroke-width="1" x1="0" x2="1000" y1="60" y2="60"></line>
+<line stroke="#f1f5f9" stroke-width="1" x1="0" x2="1000" y1="120" y2="120"></line>
+<line stroke="#f1f5f9" stroke-width="1" x1="0" x2="1000" y1="180" y2="180"></line>
+<line stroke="#f1f5f9" stroke-width="1" x1="0" x2="1000" y1="240" y2="240"></line>
+<defs>
+<!-- Gradient for RPS Throughput -->
+<lineargradient id="rpsGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#10B981" stop-opacity="0.22"></stop>
+<stop offset="100%" stop-color="#10B981" stop-opacity="0.0"></stop>
+</lineargradient>
+<!-- Gradient for Latency P99 -->
+<lineargradient id="p99Grad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#F59E0B" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#F59E0B" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- RPS Area & Path (Green) -->
+<path d="M 0,260 
+                       C 100,250 180,240 250,210 
+                       C 320,180 400,160 500,140 
+                       C 600,120 670,110 750,105 
+                       C 820,100 900,95 1000,90 
+                       L 1000,280 L 0,280 Z" fill="url(#rpsGrad)"></path>
+<path d="M 0,260 
+                       C 100,250 180,240 250,210 
+                       C 320,180 400,160 500,140 
+                       C 600,120 670,110 750,105 
+                       C 820,100 900,95 1000,90" fill="none" stroke="#10B981" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- P99 Latency Area & Path (Amber spike after Chaos T+05:00 at x=500) -->
+<path d="M 0,255 
+                       C 120,250 250,252 380,248 
+                       C 450,245 490,240 510,210 
+                       C 530,170 560,95 620,80 
+                       C 670,90 730,75 800,85 
+                       C 880,95 940,90 1000,95 
+                       L 1000,280 L 0,280 Z" fill="url(#p99Grad)"></path>
+<path d="M 0,255 
+                       C 120,250 250,252 380,248 
+                       C 450,245 490,240 510,210 
+                       C 530,170 560,95 620,80 
+                       C 670,90 730,75 800,85 
+                       C 880,95 940,90 1000,95" fill="none" stroke="#F59E0B" stroke-linecap="round" stroke-width="2.5"></path>
+</svg>
+<!-- Bottom X-Axis Time Labels -->
+<div class="absolute bottom-0 inset-x-0 flex justify-between text-[11px] font-code-mono text-secondary pt-2 border-t border-outline-variant/20">
+<span>T+00:00</span>
+<span>T+02:00</span>
+<span>T+04:00</span>
+<span class="font-semibold text-primary">T+05:00 [Fault]</span>
+<span class="font-semibold text-on-surface">T+06:42 [Now]</span>
+<span>T+08:00</span>
+<span>T+10:00</span>
+</div>
+</div>
+<!-- Bottom Metric Footnotes / Sub-targets -->
+<div class="mt-4 pt-3 border-t border-outline-variant/20 grid grid-cols-3 gap-2 text-center text-body-sm font-body-sm">
+<div>
+<span class="text-secondary text-[11px] block">Baseline Median</span>
+<span class="font-code-mono font-medium text-on-surface">84 ms</span>
+</div>
+<div>
+<span class="text-secondary text-[11px] block">Peak Latency Spike</span>
+<span class="font-code-mono font-medium text-amber-600">1,340 ms (@ T+05:45)</span>
+</div>
+<div>
+<span class="text-secondary text-[11px] block">Ingestion Integrity</span>
+<span class="font-code-mono font-medium text-emerald-600">97.86% Ack</span>
+</div>
+</div>
+</div>
+<!-- RIGHT (4 Columns): Live Event & Log Stream Terminal Card -->
+<div class="lg:col-span-5 xl:col-span-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl overflow-hidden shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] flex flex-col h-[468px]">
+<!-- Terminal Window Header -->
+<div class="bg-surface border-b border-outline-variant/30 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+<span class="ml-2 font-code-mono text-label-sm font-semibold text-on-surface truncate">
+                tail -f /var/log/finftech-chaos.log
+              </span>
+</div>
+<div class="flex items-center gap-1 text-[11px] text-secondary font-code-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-subtle"></span>
+<span>LIVE</span>
+</div>
+</div>
+<!-- Terminal Content Body -->
+<div class="p-4 bg-slate-950 text-slate-100 font-code-mono text-code-mono overflow-y-auto flex-1 space-y-2.5 leading-relaxed selection:bg-primary-container">
+<div class="text-slate-400 text-[11px] border-b border-slate-800 pb-1.5">
+              # Session attached to executor cluster node 'k6-worker-lon-04'
+            </div>
+<!-- Event 1 -->
+<div class="flex items-start gap-2">
+<span class="text-slate-400 shrink-0">[14:28:12]</span>
+<span class="text-emerald-400 font-semibold shrink-0">INFO</span>
+<span class="text-slate-200">
+<span class="text-blue-400 font-medium">k6-runner:</span> Scaled to 2,150 concurrent VUs.
+              </span>
+</div>
+<!-- Event 2 -->
+<div class="flex items-start gap-2">
+<span class="text-slate-400 shrink-0">[14:28:35]</span>
+<span class="text-amber-400 font-semibold shrink-0">WARN</span>
+<span class="text-slate-200">
+<span class="text-amber-300 font-medium">toxiproxy:</span> Injecting +350ms jitter into <span class="underline decoration-slate-600">mock-bank-gateway</span>.
+              </span>
+</div>
+<!-- Event 3 -->
+<div class="flex items-start gap-2">
+<span class="text-slate-400 shrink-0">[14:28:48]</span>
+<span class="text-amber-400 font-semibold shrink-0">WARN</span>
+<span class="text-slate-200">
+<span class="text-amber-300 font-medium">wallet-core:</span> Connection pool saturation reaching 84%.
+              </span>
+</div>
+<!-- Event 4 -->
+<div class="flex items-start gap-2 bg-red-950/40 p-1.5 rounded border-l-2 border-red-500 -mx-1">
+<span class="text-slate-400 shrink-0">[14:29:01]</span>
+<span class="text-red-400 font-semibold shrink-0">ALERT</span>
+<span class="text-red-200">
+<span class="font-medium text-red-300">p99-monitor:</span> Latency p99 crossed 1,000ms SLA target.
+              </span>
+</div>
+<!-- Event 5 -->
+<div class="flex items-start gap-2">
+<span class="text-slate-400 shrink-0">[14:29:15]</span>
+<span class="text-emerald-400 font-semibold shrink-0">INFO</span>
+<span class="text-slate-200">
+<span class="text-blue-400 font-medium">circuit-breaker:</span> Tripping half-open state on <span class="text-slate-300">ledger-db</span>.
+              </span>
+</div>
+<!-- Event 6 (Real-time tailing entry) -->
+<div class="flex items-start gap-2 text-slate-400 text-[11px] pt-1 border-t border-slate-900">
+<span class="shrink-0">[14:29:28]</span>
+<span class="text-blue-400 font-semibold shrink-0">DEBUG</span>
+<span class="text-slate-300">
+                rebalancer: Dispatching retry queue with jitter backoff (200ms - 800ms).
+              </span>
+</div>
+<!-- Blinking Terminal Prompt -->
+<div class="flex items-center gap-1 text-slate-400 pt-2">
+<span class="text-emerald-400">&gt;</span>
+<span class="w-2 h-4 bg-emerald-400 inline-block animate-pulse"></span>
+</div>
+</div>
+<!-- Terminal Control Action Footer -->
+<div class="bg-surface border-t border-outline-variant/30 px-3 py-2 flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<button class="px-2 py-0.5 rounded text-secondary hover:text-on-surface hover:bg-surface-container transition">
+                Clear
+              </button>
+<button class="px-2 py-0.5 rounded text-secondary hover:text-on-surface hover:bg-surface-container transition">
+                Download Raw .log
+              </button>
+</div>
+<label class="flex items-center gap-1.5 text-secondary cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary w-3.5 h-3.5" type="checkbox"/>
+<span>Auto-scroll</span>
+</label>
+</div>
+</div>
+</div>
+<!-- INVENTORY / ACTIVE FAULT INJECTION STATUS TABLE -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl overflow-hidden shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]">
+<div class="px-5 py-3.5 border-b border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary">crisis_alert</span>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Configured Resilience Hooks &amp; Downstream Targets</h3>
+</div>
+<span class="text-label-sm font-label-sm text-secondary font-code-mono">Cluster: docker-compose-chaos-local</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface border-b border-outline-variant/20 text-label-sm font-label-sm text-secondary">
+<th class="py-2.5 px-5 font-semibold">TARGET SERVICE</th>
+<th class="py-2.5 px-5 font-semibold">INJECTED FAULT</th>
+<th class="py-2.5 px-5 font-semibold">SEVERITY</th>
+<th class="py-2.5 px-5 font-semibold">DURATION</th>
+<th class="py-2.5 px-5 font-semibold">HEALTH IMPACT</th>
+<th class="py-2.5 px-5 font-semibold text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/15 text-body-sm font-body-sm">
+<!-- Row 1: Active Fault -->
+<tr class="hover:bg-surface transition-colors">
+<td class="py-3 px-5 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-code-mono text-label-sm">mock-bank-gateway</span>
+</td>
+<td class="py-3 px-5 text-secondary font-code-mono text-label-sm">
+                  Latency +350ms (Toxiproxy)
+                </td>
+<td class="py-3 px-5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-amber-50 text-amber-800 border border-amber-200">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    Degraded
+                  </span>
+</td>
+<td class="py-3 px-5 font-code-mono text-secondary text-label-sm">T+05:00 Ã¢â€ â€™ T+08:00</td>
+<td class="py-3 px-5">
+<span class="text-amber-700 font-medium">P99 +720ms regression</span>
+</td>
+<td class="py-3 px-5 text-right">
+<button class="px-2.5 py-1 rounded text-label-sm font-label-sm bg-surface-container hover:bg-surface-container-high text-primary font-medium transition">
+                    Remove Toxic
+                  </button>
+</td>
+</tr>
+<!-- Row 2: Standby Fault -->
+<tr class="hover:bg-surface transition-colors">
+<td class="py-3 px-5 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-code-mono text-label-sm">ledger-db-replica</span>
+</td>
+<td class="py-3 px-5 text-secondary font-code-mono text-label-sm">
+                  Packet Drop 5% (Jitter)
+                </td>
+<td class="py-3 px-5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-blue-50 text-blue-700 border border-blue-200">
+                    Scheduled
+                  </span>
+</td>
+<td class="py-3 px-5 font-code-mono text-secondary text-label-sm">T+08:00 Ã¢â€ â€™ T+09:30</td>
+<td class="py-3 px-5 text-secondary">Awaiting step trigger</td>
+<td class="py-3 px-5 text-right">
+<button class="px-2.5 py-1 rounded text-label-sm font-label-sm border border-outline-variant/40 hover:bg-surface text-secondary transition">
+                    Arm Immediately
+                  </button>
+</td>
+</tr>
+<!-- Row 3: Protected Service -->
+<tr class="hover:bg-surface transition-colors">
+<td class="py-3 px-5 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-code-mono text-label-sm">auth-token-validator</span>
+</td>
+<td class="py-3 px-5 text-secondary font-code-mono text-label-sm">
+                  None (Control Group)
+                </td>
+<td class="py-3 px-5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Nominal
+                  </span>
+</td>
+<td class="py-3 px-5 font-code-mono text-secondary text-label-sm">All drill windows</td>
+<td class="py-3 px-5 text-emerald-700 font-medium">0% error rate</td>
+<td class="py-3 px-5 text-right">
+<span class="text-label-sm text-secondary italic">Locked</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up &amp; Onboarding Ã¢â‚¬â€ FinFTech Load &amp; Resilience Lab</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-container": "#5c647a",
+            "surface-bright": "#f8f9ff",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed": "#131b2e",
+            "secondary": "#565e74",
+            "on-tertiary-container": "#bdffdb",
+            "outline": "#737686",
+            "on-error-container": "#93000a",
+            "primary-container": "#2563eb",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#005236",
+            "outline-variant": "#c3c6d7",
+            "primary-fixed-dim": "#b4c5ff",
+            "surface-dim": "#cbdbf5",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "secondary-container": "#dae2fd",
+            "inverse-on-surface": "#eaf1ff",
+            "surface-variant": "#d3e4fe",
+            "surface": "#f8f9ff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#eeefff",
+            "inverse-primary": "#b4c5ff",
+            "on-surface-variant": "#434655",
+            "background": "#f8f9ff",
+            "primary-fixed": "#dbe1ff",
+            "surface-container-highest": "#d3e4fe",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f465c",
+            "on-error": "#ffffff",
+            "on-background": "#0b1c30",
+            "tertiary-fixed": "#6ffbbe",
+            "surface-container-low": "#eff4ff",
+            "secondary-fixed-dim": "#bec6e0",
+            "tertiary-container": "#007d55",
+            "on-tertiary-fixed": "#002113",
+            "error": "#ba1a1a",
+            "tertiary-fixed-dim": "#4edea3",
+            "inverse-surface": "#213145",
+            "tertiary": "#006242",
+            "on-primary-fixed-variant": "#003ea8",
+            "secondary-fixed": "#dae2fd",
+            "primary": "#004ac6",
+            "on-primary-fixed": "#00174b",
+            "surface-container": "#e5eeff",
+            "surface-tint": "#0053db",
+            "on-surface": "#0b1c30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.25rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "display": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "metric-stat": ["Inter"],
+            "code-mono": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["15px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "metric-stat": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-mono": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #c3c6d7;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md selection:bg-primary-container selection:text-on-primary">
+<!-- Top Global Header -->
+<header class="w-full h-16 bg-surface-container-lowest border-b border-outline-variant/60 flex items-center justify-between px-6 lg:px-12 sticky top-0 z-40 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="bolt">bolt</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-sm text-headline-sm font-bold tracking-tight text-on-surface">FinFTech</span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded-full bg-surface-container-high text-primary border border-primary/20">Resilience Lab</span>
+</div>
+</div>
+<!-- Right Header CTA -->
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span>Already have an account?</span>
+<a class="text-primary font-label-md font-label-md hover:underline transition-colors flex items-center gap-1" href="#signin">
+<span>Sign In</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant hidden sm:block"></div>
+<a class="text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm flex items-center gap-1.5 transition-colors" href="#docs">
+<span class="material-symbols-outlined text-[18px]" data-icon="menu_book">menu_book</span>
+<span class="hidden md:inline">Docs</span>
+</a>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 w-full max-w-[1540px] mx-auto p-4 sm:p-6 lg:p-10 flex flex-col justify-center">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Form & Stepper Card -->
+<section class="lg:col-span-7 bg-surface-container-lowest border border-outline-variant/70 rounded-xl p-6 sm:p-8 shadow-sm">
+<!-- Progress Stepper Indicator -->
+<div class="mb-8 pb-6 border-b border-outline-variant/50">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary-container text-on-primary text-label-sm font-label-sm flex items-center justify-center font-bold">1</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Account &amp; Work Profile</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Step 1 of 2</span>
+</div>
+<!-- Stepper Bar -->
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-1/2 rounded-full transition-all duration-300"></div>
+</div>
+<div class="flex justify-between items-center mt-2 text-label-sm font-label-sm text-outline">
+<span class="text-primary font-medium">Profile &amp; Cluster Creds</span>
+<span>Instant Sandbox Allocation</span>
+</div>
+</div>
+<!-- Form Heading -->
+<div class="mb-6">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Create your SRE workspace</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Spin up deterministic financial chaos experiments and benchmark ledger write operations under high latency.</p>
+</div>
+<form class="space-y-5" onsubmit="event.preventDefault();">
+<!-- Name & Work Email Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1.5" for="full-name">
+                Full Name <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 px-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface placeholder:text-outline focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none" id="full-name" placeholder="e.g. Claire Vance" required="" type="text" value="Claire Vance"/>
+<span class="absolute right-3 top-2.5 text-tertiary material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1.5" for="work-email">
+                Work Email <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 px-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface placeholder:text-outline focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none" id="work-email" placeholder="claire@neobanklabs.io" required="" type="email" value="claire@neobanklabs.io"/>
+<span class="absolute right-3 top-2.5 text-outline material-symbols-outlined text-[18px]" data-icon="mail">mail</span>
+</div>
+</div>
+</div>
+<!-- Company / Org Field -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1.5" for="organization">
+              Organization / Company <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 px-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface placeholder:text-outline focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none" id="organization" placeholder="e.g. NeoBank Labs" required="" type="text" value="NeoBank Labs"/>
+<span class="absolute right-3 top-2.5 text-outline material-symbols-outlined text-[18px]" data-icon="corporate_fare">corporate_fare</span>
+</div>
+</div>
+<!-- Role Pill Selector -->
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="block font-label-sm text-label-sm text-on-surface font-semibold">
+                Your Primary Engineering Role
+              </label>
+<span class="font-body-sm text-body-sm text-outline">Tailors your telemetry dashboards</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="role-selector">
+<!-- Pill 1: Active -->
+<button class="role-btn active flex flex-col items-center justify-center p-2.5 rounded-lg border-2 border-primary bg-surface-container-high/60 text-primary transition-all text-center" data-role="sre" type="button">
+<span class="material-symbols-outlined text-[20px] mb-1" data-icon="shield">shield</span>
+<span class="font-label-sm text-label-sm font-semibold leading-tight">SRE / DevOps</span>
+</button>
+<!-- Pill 2 -->
+<button class="role-btn flex flex-col items-center justify-center p-2.5 rounded-lg border border-outline-variant hover:border-outline bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-all text-center" data-role="qa" type="button">
+<span class="material-symbols-outlined text-[20px] mb-1" data-icon="speed">speed</span>
+<span class="font-label-sm text-label-sm font-medium leading-tight">QA / Perf Eng</span>
+</button>
+<!-- Pill 3 -->
+<button class="role-btn flex flex-col items-center justify-center p-2.5 rounded-lg border border-outline-variant hover:border-outline bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-all text-center" data-role="lead" type="button">
+<span class="material-symbols-outlined text-[20px] mb-1" data-icon="terminal">terminal</span>
+<span class="font-label-sm text-label-sm font-medium leading-tight">Backend Lead</span>
+</button>
+<!-- Pill 4 -->
+<button class="role-btn flex flex-col items-center justify-center p-2.5 rounded-lg border border-outline-variant hover:border-outline bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-all text-center" data-role="arch" type="button">
+<span class="material-symbols-outlined text-[20px] mb-1" data-icon="account_tree">account_tree</span>
+<span class="font-label-sm text-label-sm font-medium leading-tight">Architect</span>
+</button>
+</div>
+</div>
+<!-- Password Field with Real-Time Strength Meter -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1.5" for="password">
+              Master Cluster Password <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 px-3.5 pr-10 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface placeholder:text-outline focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none font-code-mono" id="password" placeholder="Choose a strong passphrase" required="" type="password" value="N3oVault!99"/>
+<button class="absolute right-3 top-2.5 text-outline hover:text-on-surface focus:outline-none" id="toggle-pwd" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+<!-- Real-time strength criteria chips -->
+<div class="mt-2.5 p-2.5 bg-surface-container-low rounded-lg border border-outline-variant/40 flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-[16px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>8+ Characters</span>
+</div>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-[16px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>Special Symbol (@$!%*?)</span>
+</div>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-[16px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>At least 1 Number</span>
+</div>
+</div>
+</div>
+<!-- Checkbox Terms -->
+<div class="pt-1">
+<label class="flex items-start gap-2.5 cursor-pointer select-none">
+<input checked="" class="mt-1 h-4 w-4 rounded border-outline-variant text-primary-container focus:ring-primary-container/30 cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                I accept the <a class="text-primary hover:underline font-medium" href="#terms">Terms of Service</a>, 
+                <a class="text-primary hover:underline font-medium" href="#privacy">Privacy Policy</a>, and authorize 
+                automated sandbox provisioning under SOC2 Type II compliance rules.
+              </span>
+</label>
+</div>
+<!-- Primary CTA Button -->
+<div class="pt-2">
+<button class="w-full h-11 px-5 bg-primary-container hover:bg-primary active:scale-[0.99] text-on-primary font-label-md text-label-md font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all" type="submit">
+<span class="material-symbols-outlined text-[20px]" data-icon="rocket_launch">rocket_launch</span>
+<span>Create SRE Account &amp; Launch Lab</span>
+</button>
+</div>
+<!-- Under-CTA reassurance notes -->
+<div class="flex items-center justify-center gap-6 pt-1 text-label-sm font-label-sm text-outline">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary" data-icon="lock">lock</span>
+<span>TLS 1.3 Vault Encrypted</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="credit_card_off">credit_card_off</span>
+<span>No credit card required</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="timer">timer</span>
+<span>14-day full cluster access</span>
+</div>
+</div>
+</form>
+</section>
+<!-- Right Column: Interactive Container Preview & Value Banner -->
+<section class="lg:col-span-5 space-y-6">
+<!-- Live Topology & Container Banner Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/70 rounded-xl p-6 shadow-sm relative overflow-hidden">
+<!-- Top subtle badge -->
+<div class="flex items-center justify-between mb-4">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-tertiary-fixed/40 text-on-tertiary-fixed-variant text-label-sm font-label-sm font-semibold border border-tertiary/20">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span>Ready for Immediate Deployment</span>
+</div>
+<span class="font-code-mono text-code-mono text-outline">region: us-east-1</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 tracking-tight">Instant setup: 4 Docker containers pre-configured for wallet transfer benchmarking</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-5">
+            Your sandbox automatically boots an isolated mock core-banking topology with synthetic high-frequency payload generators.
+          </p>
+<!-- 4 Container Grid Visualization -->
+<div class="grid grid-cols-2 gap-3 mb-5">
+<!-- Node 1 -->
+<div class="p-3 rounded-lg bg-surface-container-low border border-outline-variant/50 hover:border-primary/40 transition-colors">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-code-mono text-code-mono font-bold text-on-surface">ledger-core:v3</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-2">Double-entry immutable balance state machine</p>
+<div class="flex items-center justify-between text-[11px] font-code-mono text-on-surface-variant">
+<span>p99: 1.4ms</span>
+<span class="text-tertiary">HEALTHY</span>
+</div>
+</div>
+<!-- Node 2 -->
+<div class="p-3 rounded-lg bg-surface-container-low border border-outline-variant/50 hover:border-primary/40 transition-colors">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-code-mono text-code-mono font-bold text-on-surface">kafka-broker:01</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-2">High-throughput event log ingestion pipe</p>
+<div class="flex items-center justify-between text-[11px] font-code-mono text-on-surface-variant">
+<span>lag: 0 msgs</span>
+<span class="text-tertiary">HEALTHY</span>
+</div>
+</div>
+<!-- Node 3 -->
+<div class="p-3 rounded-lg bg-surface-container-low border border-outline-variant/50 hover:border-primary/40 transition-colors">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-code-mono text-code-mono font-bold text-on-surface">redis-lock:cluster</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-2">Distributed Redlock transaction guard</p>
+<div class="flex items-center justify-between text-[11px] font-code-mono text-on-surface-variant">
+<span>mem: 48MB</span>
+<span class="text-tertiary">SYNCED</span>
+</div>
+</div>
+<!-- Node 4 -->
+<div class="p-3 rounded-lg bg-surface-container-low border border-outline-variant/50 hover:border-primary/40 transition-colors">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-code-mono text-code-mono font-bold text-on-surface">chaos-daemon:gw</span>
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-2">Synthetic packet drop &amp; jitter injector</p>
+<div class="flex items-center justify-between text-[11px] font-code-mono text-on-surface-variant">
+<span>mode: standby</span>
+<span class="text-primary font-bold">ARMED</span>
+</div>
+</div>
+</div>
+<!-- Quick Terminal Code Snippet -->
+<div class="bg-inverse-surface text-inverse-on-surface rounded-lg p-3 font-code-mono text-code-mono">
+<div class="flex items-center justify-between pb-2 border-b border-inverse-on-surface/10 mb-2 text-outline-variant text-[11px]">
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed inline-block"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed inline-block"></span>
+<span>finftech-cli v2.4.1</span>
+</span>
+<span>daemon.sock</span>
+</div>
+<p class="text-outline-variant">$ curl -X POST https://api.finftech.internal/v1/benchmarks \</p>
+<p class="text-inverse-on-surface pl-3">-d '{"scenario":"wallet_split_brain_500tps","duration":"120s"}'</p>
+<p class="text-tertiary-fixed-dim mt-1.5">&gt; Cluster initialized in 480ms. Ready for simulation launch.</p>
+</div>
+</div>
+<!-- Social Proof & Compliance Strip -->
+<div class="bg-surface-container-low border border-outline-variant/60 rounded-xl p-5">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-primary text-[22px]" data-icon="verified_user">verified_user</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Trusted by high-concurrency Fintech teams</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">
+            "FinFTech allowed us to simulate a total Redis master failover while handling 14,000 wallet payouts per minute. We identified deadlocks before going into production."
+          </p>
+<div class="flex items-center justify-between pt-3 border-t border-outline-variant/40">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-[11px]">
+                MR
+              </div>
+<div>
+<p class="font-label-sm text-label-sm font-semibold text-on-surface leading-none">Marcus Ramos</p>
+<p class="text-[11px] text-outline leading-tight mt-0.5">Principal SRE @ PaySphere</p>
+</div>
+</div>
+<div class="flex items-center gap-2 text-[11px] font-label-sm text-outline">
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant">SOC2 Type II</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant">ISO 27001</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Global Minimal Footer -->
+<footer class="w-full border-t border-outline-variant/50 py-4 px-6 lg:px-12 bg-surface-container-lowest mt-auto">
+<div class="max-w-[1540px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-body-sm font-body-sm text-outline">
+<div class="flex items-center gap-4">
+<span>Ã‚Â© 2025 FinFTech Systems, Inc. All rights reserved.</span>
+<span class="hidden md:inline">Ã¢â‚¬Â¢</span>
+<span class="hidden md:inline text-tertiary flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary inline-block"></span>
+          All systems operational (99.998%)
+        </span>
+</div>
+<div class="flex items-center gap-5">
+<a class="hover:text-on-surface transition-colors" href="#status">Cluster Status</a>
+<a class="hover:text-on-surface transition-colors" href="#security">Security Whitepaper</a>
+<a class="hover:text-on-surface transition-colors" href="#privacy">Privacy</a>
+<a class="hover:text-on-surface transition-colors" href="#terms">Terms of Use</a>
+</div>
+</div>
+</footer>
+<script>
+    // Real-time Role selector micro-interaction
+    const roleButtons = document.querySelectorAll('.role-btn');
+    roleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        roleButtons.forEach(b => {
+          b.classList.remove('active', 'border-2', 'border-primary', 'bg-surface-container-high/60', 'text-primary');
+          b.classList.add('border', 'border-outline-variant', 'bg-surface-container-lowest', 'text-on-surface-variant');
+        });
+        btn.classList.add('active', 'border-2', 'border-primary', 'bg-surface-container-high/60', 'text-primary');
+        btn.classList.remove('border-outline-variant', 'bg-surface-container-lowest', 'text-on-surface-variant');
+      });
+    });
+
+    // Password visibility toggle
+    const pwdInput = document.getElementById('password');
+    const toggleBtn = document.getElementById('toggle-pwd');
+    if (toggleBtn && pwdInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isPassword = pwdInput.getAttribute('type') === 'password';
+        pwdInput.setAttribute('type', isPassword ? 'text' : 'password');
+        const iconSpan = toggleBtn.querySelector('span');
+        if (iconSpan) {
+          iconSpan.textContent = isPassword ? 'visibility_off' : 'visibility';
+        }
+      });
+    }
+  </script>
+</body></html>
