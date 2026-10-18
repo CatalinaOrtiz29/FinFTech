@@ -1,44 +1,47 @@
 # FinFTech
 
-**FinFTech** es un laboratorio de simulaciÃƒÂ³n de carga y tolerancia a fallos para una API
+**FinFTech** es un laboratorio de simulación de carga y tolerancia a fallos para una API
 que representa operaciones de una billetera digital. Permite ejecutar pruebas funcionales y
 de rendimiento, inyectar latencia y fallos controlados, medir latencia/throughput/errores,
 prevenir transferencias duplicadas mediante idempotencia y consultar el historial con
-exportaciÃƒÂ³n de informes.
+exportación de informes.
 
-> Interfaz basada en los 8 diseÃƒÂ±os aprobados de Google Stitch (marca unificada como
+> Interfaz basada en los 8 diseños aprobados de Google Stitch (marca unificada como
 > **FinFTech**).
 
 ---
 
 ## Arquitectura
 
+```mermaid
+flowchart TD
+    U[Usuario] --> B[Navegador]
+    B --> F[Frontend estático<br/>HTML + Tailwind CSS + JavaScript]
+    F -->|HTTP/JSON| API[API FinFTech<br/>Node.js 24 + Express]
+    API --> DB[(SQLite<br/>node:sqlite)]
+    F --> LAB[Laboratorio de pruebas]
+    LAB --> API
+    LAB --> RUN[Ejecutor de pruebas funcionales]
+    LAB --> MET[Métricas de latencia<br/>throughput y errores]
+    LAB --> HIST[Historial e informes<br/>JSON / CSV]
+    TP[Toxiproxy opcional] -. fallos de red .-> API
+    K6[k6 opcional] -. carga .-> API
+    SQ[SonarQube opcional] -. calidad .-> F
 ```
-Navegador
-   Ã¢â€â€š  (assets estÃƒÂ¡ticos: HTML + Tailwind + JS)
-   Ã¢â€“Â¼
-Frontend  Ã¢â€â‚¬Ã¢â€â‚¬HTTP/JSONÃ¢â€â‚¬Ã¢â€â‚¬Ã¢â€“Â¶  API FinFTech (Node.js + Express)  Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€“Â¶  SQLite (node:sqlite)
-(estÃƒÂ¡tico)                        Ã¢â€â€š                                   Ã¢â€â€š
-                                  Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Ejecutor de pruebas interno (VUs, umbrales, resultados)
-                                  Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ InyecciÃƒÂ³n de fallos (latencia / errores)
-                                  Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ Historial, mÃƒÂ©tricas e informes (JSON / CSV)
 
-Componentes opcionales en Docker: Toxiproxy (fallos de red), k6 (carga), SonarQube (calidad)
-```
-
-- **API**: Node.js 24 + Express. Sin ORM: usa el mÃƒÂ³dulo nativo `node:sqlite` (no requiere
+- **API**: Node.js 24 + Express. Sin ORM: usa el módulo nativo `node:sqlite` (no requiere
   compilar dependencias nativas).
 - **Persistencia**: SQLite en `backend/data/finftech.db` (volumen `/data` en Docker).
-- **Frontend**: pÃƒÂ¡ginas estÃƒÂ¡ticas generadas desde el diseÃƒÂ±o de Stitch (`frontend/build.js`)
+- **Frontend**: páginas estáticas generadas desde el diseño de Stitch (`frontend/build.js`)
   + un runtime JS propio que consume la API real.
 
-## TecnologÃƒÂ­as
+## Tecnologías
 
-| Capa | TecnologÃƒÂ­a |
+| Capa | Tecnología |
 |------|------------|
 | API | Node.js 24, Express 4 |
 | Persistencia | SQLite (`node:sqlite`, nativo) |
-| Frontend | HTML + Tailwind (CDN del diseÃƒÂ±o) + JS vanilla |
+| Frontend | HTML + Tailwind (CDN del diseño) + JS vanilla |
 | Contenedores | Docker, Docker Compose (nginx para el frontend) |
 | Carga | k6 |
 | Fallos de red | Toxiproxy |
@@ -47,38 +50,28 @@ Componentes opcionales en Docker: Toxiproxy (fallos de red), k6 (carga), SonarQu
 
 ## Estructura del repositorio
 
-```
+```text
 FinFTech/
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ backend/                 API Express
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ src/
-Ã¢â€â€š   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ server.js        arranque
-Ã¢â€â€š   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ app.js           composiciÃƒÂ³n de la app
-Ã¢â€â€š   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ db.js            conexiÃƒÂ³n y esquema SQLite
-Ã¢â€â€š   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ lib/             errores, logger, mÃƒÂ©tricas, auth (scrypt + HMAC)
-Ã¢â€â€š   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ middleware/      contexto de peticiÃƒÂ³n, errores, autenticaciÃƒÂ³n
-Ã¢â€â€š   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ routes/          health, auth, wallet, runs, metrics, chaos, settings
-Ã¢â€â€š   Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ services/        wallet (idempotencia), runner (carga), chaos, reportsÃ¢â‚¬Â¦
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ tests/               unitarias e integraciÃƒÂ³n (incl. concurrencia)
-Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ Dockerfile
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ frontend/                interfaz (pantallas de Stitch integradas)
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ build.js             genera public/ desde _stitch_source
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ public/              pÃƒÂ¡ginas + assets/js (runtime)
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ server.js            servidor estÃƒÂ¡tico de desarrollo
-Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ Dockerfile + nginx.conf
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ k6/                      escenarios de carga y caos
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ toxiproxy/               configuraciÃƒÂ³n de proxies
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ _stitch_source/          diseÃƒÂ±os originales aprobados (referencia)
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ docker-compose.yml
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ .env.example
-Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ README.md
+├── backend/                 API Express
+│   ├── src/                 aplicación, rutas, servicios y middleware
+│   ├── tests/               pruebas unitarias e integración
+│   └── Dockerfile
+├── frontend/                interfaz y servidor estático
+│   ├── build.js             genera public/ desde _stitch_source
+│   └── public/              páginas y assets del runtime
+├── k6/                      escenarios de carga y caos
+├── toxiproxy/               configuración de proxies
+├── _stitch_source/          diseños originales de referencia
+├── docker-compose.yml
+├── .env.example
+└── README.md
 ```
-
 ## Requisitos
 
 - **Con Docker (recomendado)**: Docker + Docker Compose.
-- **Sin Docker (permitido para desarrollo)**: Node.js Ã¢â€°Â¥ 22.5 (probado con Node 24) y npm.
+- **Sin Docker (permitido para desarrollo)**: Node.js ≥ 22.5 (probado con Node 24) y npm.
 
-## ConfiguraciÃƒÂ³n de variables
+## Configuración de variables
 
 Copia `.env.example` a `.env` y ajusta los valores (no versiones el `.env`). Las variables
 principales: `PORT`, `DB_PATH`, `TOKEN_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
@@ -95,9 +88,9 @@ principales: `PORT`, `DB_PATH`, `TOKEN_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
 
 ```bash
 cp .env.example .env
-# OBLIGATORIO: generar un secreto propio para firmar los tokens (mÃƒÂ­nimo 16 caracteres):
+# OBLIGATORIO: generar un secreto propio para firmar los tokens (mínimo 16 caracteres):
 #   openssl rand -hex 32   -> pegar el resultado en TOKEN_SECRET del .env
-# La API se niega a arrancar en producciÃƒÂ³n con un valor de ejemplo; para aceptar el
+# La API se niega a arrancar en producción con un valor de ejemplo; para aceptar el
 # riesgo de forma consciente: ALLOW_INSECURE_DEFAULTS=1.
 docker compose up --build -d
 ```
@@ -106,7 +99,7 @@ docker compose up --build -d
 |----------|-----|--------|
 | Frontend | http://localhost:8080 | 8080 |
 | API | http://localhost:3000 | 3000 |
-| Toxiproxy (proxy) | Ã¢â‚¬â€ | 8666 |
+| Toxiproxy (proxy) |  | 8666 |
 | Toxiproxy (admin, solo local) | http://localhost:8474 | 8474 |
 | SonarQube (perfil `quality`) | http://localhost:9000 | 9000 |
 
@@ -137,15 +130,15 @@ curl http://localhost:3000/health
 
 ## Ejecutar las pruebas
 
-### Pruebas automatizadas (unitarias + integraciÃƒÂ³n)
+### Pruebas automatizadas (unitarias + integración)
 
 ```bash
 cd backend
 npm test
 ```
 
-Cubren: salud, login, transferencia vÃƒÂ¡lida, replays idempotentes, conflicto 409 por
-reutilizaciÃƒÂ³n de clave con cuerpo distinto, saldo insuficiente (422), validaciones (400),
+Cubren: salud, login, transferencia válida, replays idempotentes, conflicto 409 por
+reutilización de clave con cuerpo distinto, saldo insuficiente (422), validaciones (400),
 **reintentos concurrentes con la misma clave** (una sola transferencia) y **concurrencia
 sin saldo negativo**.
 
@@ -158,12 +151,12 @@ K6_SCENARIO=concurrency docker compose --profile load run --rm k6-run
 K6_SCENARIO=ramp        docker compose --profile load run --rm k6-run
 K6_SCENARIO=idempotency docker compose --profile load run --rm k6-run
 
-# Fallo a nivel de aplicaciÃƒÂ³n (/api/chaos)
+# Fallo a nivel de aplicación (/api/chaos)
 K6_SCENARIO=latency     docker compose --profile load run --rm k6-run
 K6_SCENARIO=outage      docker compose --profile load run --rm k6-run
 K6_SCENARIO=recovery    docker compose --profile load run --rm k6-run
 
-# Fallo a nivel de RED (el trÃƒÂ¡fico atraviesa Toxiproxy)
+# Fallo a nivel de RED (el tráfico atraviesa Toxiproxy)
 K6_SCENARIO=toxiproxy-baseline  docker compose --profile load run --rm k6-run
 K6_SCENARIO=toxiproxy-latency   docker compose --profile load run --rm k6-run
 K6_SCENARIO=toxiproxy-bandwidth docker compose --profile load run --rm k6-run
@@ -174,7 +167,7 @@ K6_SCENARIO=toxiproxy-recovery  docker compose --profile load run --rm k6-run
 Los resultados se conservan por escenario en `k6/results/summary-<escenario>.json` y
 `k6/results/stream-<escenario>.json`. Detalle en [`k6/README.md`](k6/README.md).
 
-### AnÃƒÂ¡lisis estÃƒÂ¡tico (SonarQube, perfil `quality`)
+### Análisis estático (SonarQube, perfil `quality`)
 
 ```bash
 docker compose --profile quality up -d            # sonar-db + sonarqube (http://localhost:9000)
@@ -186,41 +179,41 @@ node --test --experimental-test-coverage \
   tests/integration/api.test.js tests/unit/wallet.test.js
 cd ..
 
-# Token de anÃƒÂ¡lisis (la primera vez hay que cambiar la contraseÃƒÂ±a de `admin`)
+# Token de análisis (la primera vez hay que cambiar la contraseña de `admin`)
 curl -s -u admin:admin -X POST "http://localhost:9000/api/users/change_password?login=admin&password=<nueva>&previousPassword=admin"
 TOKEN=$(curl -s -u admin:<nueva> -X POST "http://localhost:9000/api/user_tokens/generate?name=finftech-cli" | jq -r .token)
 
-# AnÃƒÂ¡lisis
+# Análisis
 docker compose --profile quality run --rm -e SONAR_TOKEN="$TOKEN" sonar-scanner
 ```
 
-La configuraciÃƒÂ³n vive en [`sonar-project.properties`](sonar-project.properties) y el
+La configuración vive en [`sonar-project.properties`](sonar-project.properties) y el
 LCOV se enlaza con `sonar.javascript.lcov.reportPaths`.
 
-## Historial, mÃƒÂ©tricas e informes
+## Historial, métricas e informes
 
-- **En la interfaz**: *Performance overview* (mÃƒÂ©tricas en vivo), *History & Reports*
-  (listado, detalle, comparaciÃƒÂ³n y exportaciÃƒÂ³n).
+- **En la interfaz**: *Performance overview* (métricas en vivo), *History & Reports*
+  (listado, detalle, comparación y exportación).
 - **API**:
-  - `GET /api/metrics` Ã¢â‚¬â€ latencia (avg/p50/p90/p95/p99), throughput, errores.
-  - `GET /api/runs?limit=50` Ã¢â‚¬â€ historial.
-  - `GET /api/history/compare?ids=A,B` Ã¢â‚¬â€ comparaciÃƒÂ³n con deltas.
-  - `GET /api/runs/:id/report.json` Ã‚Â· `GET /api/runs/:id/report.csv` Ã¢â‚¬â€ informe de una ejecuciÃƒÂ³n.
-  - `GET /api/history/export.csv` Ã‚Â· `GET /api/history/export.json` Ã¢â‚¬â€ historial completo.
+  - `GET /api/metrics`  latencia (avg/p50/p90/p95/p99), throughput, errores.
+  - `GET /api/runs?limit=50`  historial.
+  - `GET /api/history/compare?ids=A,B`  comparación con deltas.
+  - `GET /api/runs/:id/report.json` · `GET /api/runs/:id/report.csv`  informe de una ejecución.
+  - `GET /api/history/export.csv` · `GET /api/history/export.json`  historial completo.
 
-Resultados posibles de una ejecuciÃƒÂ³n: `passed` (satisfactorio), `degraded` (degradado),
+Resultados posibles de una ejecución: `passed` (satisfactorio), `degraded` (degradado),
 `failed` (fallido), `incomplete` (incompleto) y `cancelled` (cancelado). Cada escenario de
-fallo tiene **criterios explÃƒÂ­citos** (por ejemplo, *recovery* exige observar el fallo y su
-recuperaciÃƒÂ³n), por lo que "prueba ejecutada" no se confunde con "sistema validado".
+fallo tiene **criterios explícitos** (por ejemplo, *recovery* exige observar el fallo y su
+recuperación), por lo que "prueba ejecutada" no se confunde con "sistema validado".
 
 ## Idempotencia de transferencias
 
 `POST /transfer` requiere el encabezado `Idempotency-Key` (o el campo `idempotencyKey`):
 
-- Misma clave + mismo cuerpo Ã¢â€ â€™ **replay** (200) con el resultado original, sin doble efecto.
-- Misma clave + cuerpo distinto Ã¢â€ â€™ **409 Conflict**.
-- La operaciÃƒÂ³n se ejecuta en una transacciÃƒÂ³n `BEGIN IMMEDIATE` y el dÃƒÂ©bito usa una
-  actualizaciÃƒÂ³n condicional (`balance_cents >= monto`), por lo que **nunca hay saldo negativo**
+- Misma clave + mismo cuerpo → **replay** (200) con el resultado original, sin doble efecto.
+- Misma clave + cuerpo distinto → **409 Conflict**.
+- La operación se ejecuta en una transacción `BEGIN IMMEDIATE` y el débito usa una
+  actualización condicional (`balance_cents >= monto`), por lo que **nunca hay saldo negativo**
   ni transferencias duplicadas bajo concurrencia.
 
 ```bash
@@ -231,7 +224,7 @@ curl -X POST http://localhost:3000/transfer \
 
 ## Latencia y fallos controlados
 
-Sin Docker, la inyecciÃƒÂ³n se hace **a nivel de aplicaciÃƒÂ³n** (sustituto de Toxiproxy), desde
+Sin Docker, la inyección se hace **a nivel de aplicación** (sustituto de Toxiproxy), desde
 la pantalla *Settings* o por API:
 
 ```bash
@@ -240,19 +233,19 @@ curl -X POST http://localhost:3000/api/chaos/failure -H 'Content-Type: applicati
 curl -X POST http://localhost:3000/api/chaos/reset
 ```
 
-Con Docker, ademÃƒÂ¡s puede usarse **Toxiproxy** para fallos a nivel de red
+Con Docker, además puede usarse **Toxiproxy** para fallos a nivel de red
 (ver [`k6/README.md`](k6/README.md)).
 
 ## Detener el entorno sin perder datos
 
 ```bash
 docker compose down            # conserva el volumen finftech-data (SQLite)
-# NO usar `-v`: eliminarÃƒÂ­a el volumen y la base de datos.
+# NO usar `-v`: eliminaría el volumen y la base de datos.
 ```
 
 Los datos persisten en el volumen `finftech-data` (API).
 
-## Logs y diagnÃƒÂ³stico
+## Logs y diagnóstico
 
 ```bash
 docker compose logs -f api        # logs JSON de la API
@@ -262,22 +255,22 @@ curl http://localhost:3000/api/services   # estado de los componentes
 
 Si un servicio no arranca, revisa `docker compose logs <servicio>` antes de reintentar.
 
-## DemostraciÃƒÂ³n acadÃƒÂ©mica
+## Demostración académica
 
 Flujo reproducible paso a paso en [`docs/demo.md`](docs/demo.md). Evidencia de las
 comprobaciones ejecutadas en [`docs/verificacion.md`](docs/verificacion.md).
 
 ## Limitaciones conocidas
 
-- **Docker sÃƒÂ­ estÃƒÂ¡ disponible y verificado**: API, frontend (Nginx), Toxiproxy, k6
+- **Docker sí está disponible y verificado**: API, frontend (Nginx), Toxiproxy, k6
   (13 escenarios) y SonarQube se han construido, arrancado y ejercitado en Docker Compose.
-  La evidencia estÃƒÂ¡ en [`docs/verificacion.md`](docs/verificacion.md).
-- **SonarQube** (perfil `quality`) se ejecutÃƒÂ³ con un anÃƒÂ¡lisis real: *quality gate* **OK**
-  (ratings A/A/A), `0` bugs, `0` vulnerabilidades, `9` *code smells* y cobertura de lÃƒÂ­nea
+  La evidencia está en [`docs/verificacion.md`](docs/verificacion.md).
+- **SonarQube** (perfil `quality`) se ejecutó con un análisis real: *quality gate* **OK**
+  (ratings A/A/A), `0` bugs, `0` vulnerabilidades, `9` *code smells* y cobertura de línea
   ~53 % (LCOV de las pruebas del backend). Requiere ~2 GB de RAM y arranca en ~40 s.
-- **Los fallos de aplicaciÃƒÂ³n (`/api/chaos/*`) y los de red (Toxiproxy) son mecanismos
-  distintos**: el primero actÃƒÂºa en el proceso de la API (funciona sin Docker); el segundo
-  interrumpe el trÃƒÂ¡fico a nivel de red a travÃƒÂ©s del proxy `finftech_api`.
+- **Los fallos de aplicación (`/api/chaos/*`) y los de red (Toxiproxy) son mecanismos
+  distintos**: el primero actúa en el proceso de la API (funciona sin Docker); el segundo
+  interrumpe el tráfico a nivel de red a través del proxy `finftech_api`.
 - No se implementan (se muestran como *no disponibles* en la interfaz): SSO (Okta/SAML),
-  webhooks, SLA guardrails, API keys/CLI y gestiÃƒÂ³n de equipos.
-- No se declara cumplimiento de normas ISO: solo se aplican prÃƒÂ¡cticas tÃƒÂ©cnicas concretas.
+  webhooks, SLA guardrails, API keys/CLI y gestión de equipos.
+- No se declara cumplimiento de normas ISO: solo se aplican prácticas técnicas concretas.
