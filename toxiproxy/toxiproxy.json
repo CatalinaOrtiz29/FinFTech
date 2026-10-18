@@ -1,0 +1,8 @@
+[
+  {
+    "name": "finftech_api",
+    "listen": "0.0.0.0:8666",
+    "upstream": "api:3000",
+    "enabled": true
+  }
+]

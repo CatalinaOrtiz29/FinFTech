@@ -17,6 +17,7 @@ backend/data/
 
 # ===== Resultados de pruebas y reportes =====
 k6/results/
+!k6/results/.gitkeep
 results/
 *.log
 logs/
