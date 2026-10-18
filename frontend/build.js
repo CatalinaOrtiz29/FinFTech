@@ -73,6 +73,9 @@ function tagBody(html, page) {
 
 function injectAssets(html) {
   let out = html;
+  if (!out.includes('rel="icon"')) {
+    out = out.replace('</head>', '  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>\n</head>');
+  }
   if (!out.includes('assets/css/finftech.css')) {
     out = out.replace('</head>', '  <link rel="stylesheet" href="assets/css/finftech.css"/>\n</head>');
   }

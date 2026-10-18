@@ -37,6 +37,8 @@
   }
 
   function ensureSessionChip() {
+    var page = document.body.getAttribute('data-page');
+    if (page === 'sign-in' || page === 'sign-up') return;
     var header = document.querySelector('header');
     if (!header || document.getElementById('ff-session')) return;
     var user = FF.auth.user();

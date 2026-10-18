@@ -10,3 +10,58 @@
   to { transform: rotate(360deg); }
 }
 .animate-spin { animation: ff-spin 1s linear infinite; }
+
+/* ---------------------------------------------------------------------------
+   Pantallas de autenticaciÃƒÂ³n (sign-in / sign-up)
+   El <main> de Stitch trae min-h-[calc(100vh-53px)]; como la cabecera real es un
+   poco mÃƒÂ¡s alta, se generaba una barra de desplazamiento vertical de unos pocos
+   pÃƒÂ­xeles. Se deja que flex-1 ocupe el espacio restante del viewport.
+--------------------------------------------------------------------------- */
+[data-page="sign-in"] main,
+[data-page="sign-up"] main {
+  min-height: 0;
+}
+
+/* Sin desplazamiento horizontal en pantallas pequeÃƒÂ±as. */
+[data-page="sign-in"],
+[data-page="sign-up"] {
+  overflow-x: hidden;
+}
+
+/* Foco visible para navegaciÃƒÂ³n con teclado y lectores de pantalla. */
+[data-page="sign-in"] :focus-visible,
+[data-page="sign-up"] :focus-visible {
+  outline: 2px solid #004ac6;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Cabecera del shell de autenticaciÃƒÂ³n en pantallas pequeÃƒÂ±as: evita desbordes
+   permitiendo el salto de lÃƒÂ­nea y ocultando los enlaces decorativos sin destino. */
+@media (max-width: 640px) {
+  [data-page="sign-in"] header,
+  [data-page="sign-up"] header {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  [data-page="sign-in"] header a[href="#"],
+  [data-page="sign-up"] header a[href="#"] {
+    display: none;
+  }
+  /* Oculta el separador vertical que acompaÃƒÂ±aba al enlace decorativo oculto. */
+  [data-page="sign-in"] header .h-4.w-px,
+  [data-page="sign-up"] header .h-4.w-px {
+    display: none;
+  }
+}
+
+/* En mÃƒÂ³vil, el panel complementario deja de ser decorativo y pasa a ser contenido
+   apilado: se reduce el padding para aprovechar el ancho disponible. */
+@media (max-width: 640px) {
+  [data-page="sign-in"] .font-headline-md,
+  [data-page="sign-in"] .font-headline-lg {
+    line-height: 1.25;
+  }
+}

@@ -603,39 +603,178 @@
   }
 
   /* ---------- Sign In ---------- */
-  function signIn() {
-    main().innerHTML =
-      '<div class="max-w-md mx-auto">' +
-      U.card({
-        icon: 'shield_person', title: 'Sign in to FinFTech', subtitle: 'Enterprise Load & Resilience Simulation',
-        body: '<div class="space-y-4">' +
-          '<div id="ff-auth-msg"></div>' +
-          U.field('Correo', U.input({ id: 'ff-email', type: 'email', placeholder: 'admin@finftech.local', value: 'admin@finftech.local' })) +
-          U.field('ContraseÃƒÂ±a', U.input({ id: 'ff-password', type: 'password', placeholder: 'finftech-admin', value: 'finftech-admin' })) +
-          U.button('Iniciar sesiÃƒÂ³n', { variant: 'primary', icon: 'arrow_forward', id: 'ff-signin' }) +
-          '<p class="text-body-sm text-secondary dark:text-secondary-fixed-dim text-center">Ã‚Â¿No tienes cuenta? <a class="text-primary-container hover:underline" href="sign-up.html">Crear cuenta</a></p>' +
-          '<p class="text-[12px] text-outline text-center">Credenciales de demostraciÃƒÂ³n: <span class="font-code-mono">admin@finftech.local</span> / <span class="font-code-mono">finftech-admin</span></p>' +
-          '</div>',
-      }) + '</div>';
-    var btn = document.getElementById('ff-signin');
-    btn.onclick = async function () {
-      var email = document.getElementById('ff-email').value;
-      var password = document.getElementById('ff-password').value;
-      var msg = document.getElementById('ff-auth-msg');
-      msg.innerHTML = '';
-      btn.disabled = true;
-      try {
-        var res = await api.login(email, password);
-        FF.auth.set(res.token, res.user);
-        location.href = 'dashboard.html';
-      } catch (err) {
-        msg.innerHTML = U.errorBox(err);
-        btn.disabled = false;
-      }
-    };
+  function authField(id, label, type, opts) {
+    opts = opts || {};
+    var autocomplete = opts.autocomplete ? ' autocomplete="' + opts.autocomplete + '"' : '';
+    var labelExtra = opts.labelExtra || '';
+    var trailing = opts.trailing || '';
+    return (
+      '<div>' +
+      '<div class="flex items-center justify-between mb-1.5">' +
+      '<label for="' + id + '" class="block font-label-md text-label-md text-on-surface">' + U.esc(label) + '</label>' +
+      labelExtra +
+      '</div>' +
+      '<div class="relative">' +
+      '<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline pointer-events-none" aria-hidden="true">' + (opts.icon || 'mail') + '</span>' +
+      '<input id="' + id + '" name="' + id + '" type="' + type + '" required' + autocomplete +
+      ' class="w-full h-11 pl-10 ' + (trailing ? 'pr-11' : 'pr-3') + ' rounded-lg bg-surface-container-lowest border border-outline-variant text-body-md font-body-md text-on-surface placeholder:text-outline/70 focus:outline-none focus:border-primary-container focus:ring-4 focus:ring-primary/10 transition-all"' +
+      ' placeholder="' + U.esc(opts.placeholder || '') + '" value="' + U.esc(opts.value || '') + '"/>' +
+      trailing +
+      '</div>' +
+      (opts.hint ? '<span class="block text-[12px] text-outline mt-1">' + U.esc(opts.hint) + '</span>' : '') +
+      '</div>'
+    );
   }
 
-  /* ---------- Sign Up ---------- */
+  function labStatusCard() {
+    return (
+      '<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-sm">' +
+      '<div class="flex items-center justify-between mb-4 gap-3">' +
+      '<div class="flex items-center gap-2.5 min-w-0">' +
+      '<div class="h-7 w-7 shrink-0 rounded-md bg-surface-container-high flex items-center justify-center text-primary">' + U.icon('dns', 16) + '</div>' +
+      '<div class="min-w-0"><div class="font-label-sm text-label-sm text-on-surface truncate">Estado del laboratorio</div><div class="text-[11px] font-code-mono text-outline truncate">GET /api/services</div></div>' +
+      '</div>' +
+      '<span class="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-surface-container border border-outline-variant text-secondary">en vivo</span>' +
+      '</div>' +
+      '<div id="ff-lab-status" class="space-y-2 text-body-sm" aria-live="polite"><div class="text-outline">Consultando componentesÃ¢â‚¬Â¦</div></div>' +
+      '</div>'
+    );
+  }
+
+  function loadLabStatus() {
+    var box = document.getElementById('ff-lab-status');
+    if (!box) return;
+    api
+      .services()
+      .then(function (res) {
+        var rows = (res.services || []).slice(0, 5).map(function (s) {
+          return (
+            '<div class="flex items-center justify-between gap-3 py-1.5 px-2.5 rounded bg-surface-container-low border border-outline-variant/50">' +
+            '<div class="flex items-center gap-2 min-w-0">' + U.icon('chevron_right', 15) + '<span class="font-code-mono text-on-surface truncate">' + U.esc(s.name) + '</span></div>' +
+            '<span class="shrink-0">' + U.badge(s.status) + '</span>' +
+            '</div>'
+          );
+        });
+        box.innerHTML = rows.join('');
+      })
+      .catch(function () {
+        box.innerHTML = '<div class="py-1.5 px-2.5 rounded bg-surface-container-low border border-outline-variant/50 text-outline">No se pudo consultar el estado (la API no responde).</div>';
+      });
+  }
+
+  function signIn() {
+    var panel =
+      '<section class="lg:col-span-5 bg-surface-container-low border-t lg:border-t-0 lg:border-l border-outline-variant p-6 sm:p-10 lg:p-12 flex flex-col justify-between gap-8 relative overflow-hidden">' +
+      '<div class="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden="true" style="background-image: radial-gradient(#004ac6 1px, transparent 1px); background-size: 20px 20px;"></div>' +
+      '<div class="relative z-10">' +
+      '<div class="flex flex-wrap items-center gap-2 mb-6">' +
+      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface flex items-center gap-1.5 shadow-sm"><span class="h-1.5 w-1.5 rounded-full bg-primary"></span>k6 &amp; Toxiproxy</span>' +
+      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface shadow-sm">Docker Compose</span>' +
+      '<span class="px-2.5 py-1 rounded bg-surface-container-lowest border border-outline-variant font-label-sm text-label-sm text-on-surface shadow-sm">Idempotencia</span>' +
+      '</div>' +
+      '<h2 class="font-headline-md text-headline-md sm:font-headline-lg sm:text-headline-lg text-on-surface tracking-tight mb-3">SimulaciÃƒÂ³n de carga y tolerancia a fallos</h2>' +
+      '<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-6">Ejecuta pruebas de carga, inyecta latencia y fallos controlados, mide latencia, throughput y errores, y evita transferencias duplicadas mediante idempotencia sobre la API de la billetera digital.</p>' +
+      labStatusCard() +
+      '</div>' +
+      '<div class="relative z-10 pt-6 mt-2 border-t border-outline-variant/60">' +
+      '<div class="font-label-sm text-label-sm uppercase tracking-wider text-outline mb-3">QuÃƒÂ© puedes hacer en el laboratorio</div>' +
+      '<ul class="space-y-1.5 text-body-sm text-on-surface-variant">' +
+      '<li class="flex items-start gap-2">' + U.icon('check_circle', 16) + '<span>Pruebas funcionales, de carga, concurrencia y ramp-up con umbrales configurables.</span></li>' +
+      '<li class="flex items-start gap-2">' + U.icon('check_circle', 16) + '<span>InyecciÃƒÂ³n de latencia y fallos, con verificaciÃƒÂ³n de recuperaciÃƒÂ³n.</span></li>' +
+      '<li class="flex items-start gap-2">' + U.icon('check_circle', 16) + '<span>Historial con comparaciÃƒÂ³n de ejecuciones e informes en JSON y CSV.</span></li>' +
+      '</ul>' +
+      '</div>' +
+      '</section>';
+
+    var form =
+      '<section class="lg:col-span-7 flex flex-col justify-between p-6 sm:p-10 lg:p-14 xl:px-24 bg-surface-container-lowest">' +
+      '<div class="w-full max-w-md mx-auto my-auto py-6 sm:py-8">' +
+      '<div class="mb-8">' +
+      '<div class="flex items-center gap-3 mb-6">' +
+      '<div class="h-10 w-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm shadow-primary/20">' + U.icon('shield_lock', 22) + '</div>' +
+      '<div><div class="font-headline-md text-headline-md font-bold leading-none text-on-surface">FinFTech</div><div class="text-[11px] font-code-mono uppercase tracking-wider text-outline">Load &amp; Resilience Lab</div></div>' +
+      '</div>' +
+      '<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight mb-2">Sign in to FinFTech</h1>' +
+      '<p class="font-body-md text-body-md text-on-surface-variant">Accede al laboratorio de pruebas de carga y tolerancia a fallos de la API de billetera digital.</p>' +
+      '</div>' +
+      '<form id="ff-login-form" novalidate class="space-y-4">' +
+      '<div id="ff-auth-msg" role="status" aria-live="polite"></div>' +
+      authField('ff-email', 'Correo', 'email', { icon: 'mail', autocomplete: 'username', placeholder: 'admin@finftech.local', value: 'admin@finftech.local' }) +
+      authField('ff-password', 'ContraseÃƒÂ±a', 'password', {
+        icon: 'lock',
+        autocomplete: 'current-password',
+        placeholder: 'Tu contraseÃƒÂ±a',
+        value: 'finftech-admin',
+        trailing: '<button type="button" id="ff-toggle-pw" aria-label="Mostrar u ocultar la contraseÃƒÂ±a" aria-pressed="false" class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-md text-outline hover:text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors">' + U.icon('visibility', 18) + '</button>',
+      }) +
+      '<button type="submit" id="ff-signin" class="w-full h-11 mt-2 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.99] shadow-sm shadow-primary/25">' +
+      '<span>Iniciar sesiÃƒÂ³n</span>' + U.icon('arrow_forward', 18) +
+      '</button>' +
+      '</form>' +
+      '<p class="mt-4 text-body-sm text-on-surface-variant text-center">Ã‚Â¿No tienes cuenta? <a class="text-primary-container hover:underline font-medium" href="sign-up.html">Crear cuenta</a></p>' +
+      '<div class="mt-6 rounded-lg border border-outline-variant bg-surface-container-low p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">' +
+      '<div class="text-[12px] text-on-surface-variant">Credenciales de demostraciÃƒÂ³n: <span class="font-code-mono text-on-surface">admin@finftech.local</span> / <span class="font-code-mono text-on-surface">finftech-admin</span></div>' +
+      '<button type="button" id="ff-demo-creds" class="shrink-0 text-label-sm font-label-sm text-primary-container hover:underline">Usar credenciales demo</button>' +
+      '</div>' +
+      '</div>' +
+      '<footer class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-outline font-body-sm text-body-sm border-t border-outline-variant/40">' +
+      '<p>Ã‚Â© 2026 FinFTech Ã¢â‚¬â€ Load &amp; Resilience Lab.</p>' +
+      '<div class="flex items-center gap-3 text-[12px]"><span>API <span class="font-code-mono">' + U.esc(FF.apiBase()) + '</span></span></div>' +
+      '</footer>' +
+      '</section>';
+
+    // El <main> usa un grid de 12 columnas (grid-cols-1 lg:grid-cols-12): se renderizan
+    // DOS hijos con col-span para respetar la composiciÃƒÂ³n original de dos columnas.
+    main().innerHTML = form + panel;
+
+    var formEl = document.getElementById('ff-login-form');
+    var btn = document.getElementById('ff-signin');
+    var msg = document.getElementById('ff-auth-msg');
+
+    document.getElementById('ff-demo-creds').onclick = function () {
+      document.getElementById('ff-email').value = 'admin@finftech.local';
+      document.getElementById('ff-password').value = 'finftech-admin';
+      document.getElementById('ff-email').focus();
+    };
+
+    var pw = document.getElementById('ff-password');
+    var toggle = document.getElementById('ff-toggle-pw');
+    toggle.onclick = function () {
+      var show = pw.type === 'password';
+      pw.type = show ? 'text' : 'password';
+      toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
+      toggle.querySelector('.material-symbols-outlined').textContent = show ? 'visibility_off' : 'visibility';
+      pw.focus();
+    };
+
+    function submit() {
+      var email = document.getElementById('ff-email').value;
+      var password = pw.value;
+      msg.innerHTML = '';
+      btn.disabled = true;
+      btn.classList.add('opacity-60', 'cursor-not-allowed');
+      api
+        .login(email, password)
+        .then(function (res) {
+          FF.auth.set(res.token, res.user);
+          location.href = 'dashboard.html';
+        })
+        .catch(function (err) {
+          msg.innerHTML = U.errorBox(err);
+          btn.disabled = false;
+          btn.classList.remove('opacity-60', 'cursor-not-allowed');
+        });
+    }
+
+    formEl.addEventListener('submit', function (e) {
+      e.preventDefault();
+      submit();
+    });
+
+    loadLabStatus();
+  }
+
+/* ---------- Sign Up ---------- */
   function signUp() {
     main().innerHTML =
       '<div class="max-w-lg mx-auto">' +

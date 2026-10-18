@@ -88,3 +88,29 @@ GET /api/history/compare?ids=run_A,run_B
 2. EjecuciÃƒÂ³n de los 8 escenarios k6 en contenedor.
 3. InyecciÃƒÂ³n de fallos de red con Toxiproxy y su restauraciÃƒÂ³n.
 4. AnÃƒÂ¡lisis estÃƒÂ¡tico con SonarQube (perfil `quality`).
+
+## Login responsive Ã¢â‚¬â€ verificaciÃƒÂ³n con Edge headless
+
+VerificaciÃƒÂ³n automatizada de `sign-in.html` con Microsoft Edge en modo headless
+(`puppeteer-core`) en cuatro resoluciones. En las cuatro, Tailwind quedÃƒÂ³ aplicado
+(`main` en `display: grid`) y **no hubo desbordamiento horizontal**
+(`documentElement.scrollWidth == innerWidth`):
+
+| Viewport | Dos columnas | ÃŽâ€ centrado de la tarjeta vs. su columna | Desbordamiento horizontal |
+|----------|--------------|------------------------------------------|---------------------------|
+| 1440 Ãƒâ€” 900 | sÃƒÂ­ | 0 px | no |
+| 1366 Ãƒâ€” 768 | sÃƒÂ­ | 0 px | no |
+| 768 Ãƒâ€” 1024 | no (apilado) | 0 px | no |
+| 390 Ãƒâ€” 844 | no (apilado) | 0 px | no |
+
+Pruebas funcionales (Edge headless): credenciales incorrectas Ã¢â€ â€™ Ã‚Â«Credenciales invÃƒÂ¡lidas.Ã‚Â»;
+botÃƒÂ³n Ã‚Â«Usar credenciales demoÃ‚Â» Ã¢â€ â€™ rellena `admin@finftech.local` / `finftech-admin`;
+login correcto Ã¢â€ â€™ redirecciÃƒÂ³n a `dashboard.html` con token almacenado; alternar la
+visibilidad de la contraseÃƒÂ±a (`password Ã¢â€ â€™ text`); envÃƒÂ­o con **Enter**. Consola sin errores
+y sin respuestas Ã¢â€°Â¥ 400.
+
+**Causa del defecto corregido:** el `<main>` de Stitch usa `grid grid-cols-1 lg:grid-cols-12`
+y el runtime insertaba **un ÃƒÂºnico** hijo, que ocupaba la **columna 1** (Ã¢â€°Ë†1/12 del ancho),
+quedando pegado a la izquierda con el resto de la pantalla vacÃƒÂ­o. Ahora se renderizan dos
+`<section>` con `lg:col-span-7` (formulario) y `lg:col-span-5` (panel complementario),
+respetando la composiciÃƒÂ³n de dos columnas del diseÃƒÂ±o original.
